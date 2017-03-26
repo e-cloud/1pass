@@ -1,0 +1,124 @@
+<div id="onePassPanel">
+  <header>
+    <div class="opp-title">
+      <span>OnePass</span>
+      <span>v1.0.0</span>
+    </div>
+    <div class="opp-ctrl-btns">
+      <a title="help">?</a>
+      <a title="expand/fold">+</a>
+      <a title="close">&times;</a>
+    </div>
+  </header>
+  <hr>
+  <form onsubmit="return false" name="onePass">
+    <div class="fg">
+      <label for="domain">域名(*)</label>
+      <input name="domain" value="{{=it.domain}}" required>
+    </div>
+
+    <div class="fg">
+      <label for="name">用户名</label>
+      <input name="name" value="">
+    </div>
+
+    <div class="fg">
+      <label for="pass">主密码(*)</label>
+      <input name="pass" type="password" value="" autocomplete="off" required>
+    </div>
+
+    <div class="fg">
+      <label for="passOutLen">密码长度</label>
+      <select name="passOutLen" required>
+        {{~it.passLenRange :value}}
+         <!-- htmlmin:ignore --><option value="{{=value}}" {{?it.passOutLen===value}}selected="true"{{?}}>{{=value}}</option><!-- htmlmin:ignore -->
+        {{~}}
+      </select>
+    </div>
+
+    <div class="optg" hidden>
+      <div class="fg">
+        <label for="charset">密码字符集</label>
+        <select name="charset" required>
+          <option value="94">所有可打印字符</option>
+          <option value="64">字母、数字以及 + 和 / </option>
+          <option value="62">字母和数字</option>
+          <option value="10">只含数字</option>
+        </select>
+      </div>
+
+      <div class="fg">
+        <label for="itCount">迭代次数</label>
+        <input name="itCount" value="{{=it.itCount}}" maxlength="4" required>
+      </div>
+
+      <div class="fg">
+        <label for="salt">盐(salt)</label>
+        <input name="salt" value="{{=it.salt}}">
+      </div>
+    </div>
+
+    <div class="cg">
+      <button type="submit">生成密码</button>
+      <button id="clean-op">清除密码</button>
+      <p hidden>
+        <output id="keygen"></output>
+      </p>
+    </div>
+  </form>
+
+  <style>
+    #onePassPanel {
+      position: fixed;
+      z-index: 1000;
+      top: 0;
+      right: 0;
+      border-radius: 10px;
+      padding: 5px;
+      background-color: #ccc;
+    }
+
+    .opp-title {
+      float: left;
+    }
+
+    .opp-ctrl-btns {
+      float: right;
+    }
+
+    .opp-ctrl-btns a {
+      cursor: pointer;
+      margin: 0 3px;
+    }
+
+    #onePassPanel hr {
+      clear: both;
+      margin: 3px 0;
+    }
+
+    .fg label {
+      display: inline-block;
+      text-align: right;
+      width: 6em;
+
+      margin-right: 0.5em;
+    }
+
+    .fg input,
+    .fg select {
+      width: 12em;
+      background-color: white;
+    }
+
+    .cg {
+
+      text-align: center;
+      margin-top: 5px;
+    }
+
+    .cg p {
+      margin: 5px;
+    }
+
+  </style>
+</div>
