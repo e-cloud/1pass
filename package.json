@@ -6,7 +6,8 @@
     "precommit": "validate-commit-msg",
     "serve": "browser-sync start -c bs-config.js",
     "roll-dev": "cross-env NODE_ENV=Development rollup -c -w",
-    "build": "cross-env NODE_ENV=Production rollup -c"
+    "build": "cross-env NODE_ENV=Production rollup -c",
+    "test": "mocha --harmony test/**.spec.js"
   },
   "private": true,
   "dependencies": {
