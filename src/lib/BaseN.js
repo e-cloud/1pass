@@ -20,7 +20,7 @@ for (let i = 0; i < 8; i++) {
  * @constructor
  */
 class BaseN {
-  constructor(alphabet, blockMaxBitsCount) {
+  constructor(alphabet, blockMaxBitsCount = 64) {
     this.alphabet = alphabet;
 
     // 字母表长度
@@ -34,13 +34,13 @@ class BaseN {
     // 分区编码字符数
     this.blockCharsCount = bitsCharsCount.charsCountInBits;
 
+    this.powN = preparePowN(this.alphabetLen, this.blockCharsCount);
+
     // turn the alphabet in id:char to char:id
     this.inverseAlphabet = {};
     for (let i = 0; i < this.alphabetLen; i++) {
       this.inverseAlphabet[this.alphabet[i]] = i;
     }
-
-    this.powN = preparePowN(this.alphabetLen, this.blockCharsCount);
   }
 
   /**
@@ -73,7 +73,7 @@ class BaseN {
       this.encodeBlock(data, result, i, blockBitsCount, blockCharsCount);
     }
     if (tailBitsLength !== 0) {
-      const bits = this.getBitsN(data, mainBitsLength, tailBitsLength);
+      const bits = getBitsN(data, mainBitsLength, tailBitsLength);
       this.bitsToChars(result, mainCharsCount, tailCharsCount, bits);
     }
 
@@ -91,7 +91,7 @@ class BaseN {
   encodeBlock(src, dst, index, blockBitsCount, blockCharsCount) {
     const charInd = index * blockCharsCount;
     const bitInd = index * blockBitsCount;
-    const bits = this.getBitsN(src, bitInd, blockBitsCount);
+    const bits = getBitsN(src, bitInd, blockBitsCount);
     this.bitsToChars(dst, charInd, blockCharsCount, bits);
   }
 
@@ -108,38 +108,6 @@ class BaseN {
       chars[index + i] = this.alphabet[block % this.alphabetLen];
       block = Math.floor(block / this.alphabetLen);
     }
-  }
-
-  getBitsN(data, bitPos, bitsCount) {
-    let result = 0;
-
-    let curBytePos = Math.floor(bitPos / 8);
-    let curBitInBytePos = bitPos % 8;
-    let xLength = Math.min(bitsCount, 8 - curBitInBytePos);
-
-    if (xLength !== 0) {
-      let bigInt = data[curBytePos];
-      result = ((bigInt >> 8 - xLength - curBitInBytePos) & (twoInPowerN[7 - curBitInBytePos])) << bitsCount - xLength;
-
-      curBytePos += Math.floor((curBitInBytePos + xLength) / 8);
-      curBitInBytePos = (curBitInBytePos + xLength) % 8;
-
-      let x2Length = bitsCount - xLength;
-      if (x2Length > 8) x2Length = 8;
-
-      while (x2Length > 0) {
-        xLength += x2Length;
-        result |= ((data[curBytePos] >> 8 - x2Length) << bitsCount - xLength);
-
-        curBytePos += Math.floor((curBitInBytePos + x2Length) / 8);
-        curBitInBytePos = (curBitInBytePos + x2Length) % 8;
-
-        x2Length = bitsCount - xLength;
-        if (x2Length > 8) x2Length = 8;
-      }
-    }
-
-    return result;
   }
 
   decodeToString(str) {
@@ -173,7 +141,7 @@ class BaseN {
     }
     if (tailCharsCount !== 0) {
       const bits = this.charsToBits(data, mainCharsCount, tailCharsCount);
-      this.addBitsN(result, bits, mainBitsLength, tailBitsLength);
+      addBitsN(result, bits, mainBitsLength, tailBitsLength);
     }
 
     return result;
@@ -183,7 +151,7 @@ class BaseN {
     const charInd = index * blockCharsCount;
     const bitInd = index * blockBitsCount;
     const bits = this.charsToBits(src, charInd, blockCharsCount);
-    this.addBitsN(dst, bits, bitInd, blockBitsCount);
+    addBitsN(dst, bits, bitInd, blockBitsCount);
   }
 
   charsToBits(data, index, count) {
@@ -194,39 +162,71 @@ class BaseN {
     }
     return result;
   }
+}
 
-  addBitsN(data, value, bitPos, bitsCount) {
-    let curBytePos = Math.floor(bitPos / 8);
-    let curBitInBytePos = bitPos % 8;
+function getBitsN(data, bitPos, bitsCount) {
+  let result = 0;
 
-    let xLength = Math.min(bitsCount, 8 - curBitInBytePos);
-    if (xLength !== 0) {
-      const rightShiftBits = bitsCount + curBitInBytePos - 8;
-      // todo: here is something related to BigInteger implementation of C#
-      // like `29 >> -2` is converted to `29 << 2`, but there is no such logic
-      // in javascript, so here use a tenary expression
-      let x1 = rightShiftBits >= 0 ? value >> rightShiftBits : value << -rightShiftBits;
-      x1 &= (twoInPowerN[7 - curBitInBytePos]);
-      x1 &= 0xFF;
-      data[curBytePos] |= x1;
+  let curBytePos = Math.floor(bitPos / 8);
+  let curBitInBytePos = bitPos % 8;
+  let xLength = Math.min(bitsCount, 8 - curBitInBytePos);
 
-      curBytePos += Math.floor((curBitInBytePos + xLength) / 8);
-      curBitInBytePos = (curBitInBytePos + xLength) % 8;
+  if (xLength !== 0) {
+    let bigInt = data[curBytePos];
+    result = ((bigInt >> 8 - xLength - curBitInBytePos) & (twoInPowerN[7 - curBitInBytePos])) << bitsCount - xLength;
 
-      let x2Length = bitsCount - xLength;
+    curBytePos += Math.floor((curBitInBytePos + xLength) / 8);
+    curBitInBytePos = (curBitInBytePos + xLength) % 8;
+
+    let x2Length = bitsCount - xLength;
+    if (x2Length > 8) x2Length = 8;
+
+    while (x2Length > 0) {
+      xLength += x2Length;
+      result |= ((data[curBytePos] >> 8 - x2Length) << bitsCount - xLength);
+
+      curBytePos += Math.floor((curBitInBytePos + x2Length) / 8);
+      curBitInBytePos = (curBitInBytePos + x2Length) % 8;
+
+      x2Length = bitsCount - xLength;
       if (x2Length > 8) x2Length = 8;
+    }
+  }
 
-      while (x2Length > 0) {
-        xLength += x2Length;
-        const x2 = ((value >> (bitsCount - xLength)) << (8 - x2Length)) & 0xFF;
-        data[curBytePos] |= x2;
+  return result;
+}
 
-        curBytePos += Math.floor((curBitInBytePos + x2Length) / 8);
-        curBitInBytePos = (curBitInBytePos + x2Length) % 8;
+function addBitsN(data, value, bitPos, bitsCount) {
+  let curBytePos = Math.floor(bitPos / 8);
+  let curBitInBytePos = bitPos % 8;
 
-        x2Length = bitsCount - xLength;
-        if (x2Length > 8) x2Length = 8;
-      }
+  let xLength = Math.min(bitsCount, 8 - curBitInBytePos);
+  if (xLength !== 0) {
+    const rightShiftBits = bitsCount + curBitInBytePos - 8;
+    // todo: here is something related to BigInteger implementation of C#
+    // like `29 >> -2` is converted to `29 << 2`, but there is no such logic
+    // in javascript, so here use a tenary expression
+    let x1 = rightShiftBits >= 0 ? value >> rightShiftBits : value << -rightShiftBits;
+    x1 &= (twoInPowerN[7 - curBitInBytePos]);
+    x1 &= 0xFF;
+    data[curBytePos] |= x1;
+
+    curBytePos += Math.floor((curBitInBytePos + xLength) / 8);
+    curBitInBytePos = (curBitInBytePos + xLength) % 8;
+
+    let x2Length = bitsCount - xLength;
+    if (x2Length > 8) x2Length = 8;
+
+    while (x2Length > 0) {
+      xLength += x2Length;
+      const x2 = ((value >> (bitsCount - xLength)) << (8 - x2Length)) & 0xFF;
+      data[curBytePos] |= x2;
+
+      curBytePos += Math.floor((curBitInBytePos + x2Length) / 8);
+      curBitInBytePos = (curBitInBytePos + x2Length) % 8;
+
+      x2Length = bitsCount - xLength;
+      if (x2Length > 8) x2Length = 8;
     }
   }
 }
@@ -356,7 +356,7 @@ function bytesToUtf8Str(bytes) {
   return out;
 }
 
-module.exports = {
+export {
   alphabets,
   BaseN,
   strToUtf8Bytes,
