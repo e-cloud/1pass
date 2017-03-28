@@ -17,26 +17,23 @@ export default {
     commonjs({
       // non-CommonJS modules will be ignored, but you can also
       // specifically include/exclude files
-      include: 'node_modules/**', // Default: undefined
+      include: ['node_modules/**'], // Default: undefined
       sourceMap: false,
-      namedExports: {
-        'dot/doT': ['template']
-      }
     }),
     html({
       include: 'src/**/*.html',
       htmlMinifierOptions: {
-        collapseWhitespace: process.env.NODE_ENV === "Production",
-        customAttrSurround: [dotAttrWrapPair]
-      }
+        collapseWhitespace: process.env.NODE_ENV === 'Production',
+        customAttrSurround: [dotAttrWrapPair],
+      },
     }),
     babel({
       exclude: 'node_modules/**' // only transpile our source code
     }),
-    process.env.NODE_ENV === "Production" && uglify({
+    process.env.NODE_ENV === 'Production' && uglify({
       output: {
-        quote_style: 1
-      }
-    })
-  ]
+        quote_style: 1,
+      },
+    }),
+  ],
 };
