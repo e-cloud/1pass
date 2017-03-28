@@ -1,5 +1,9 @@
 /* eslint no-bitwise: 0, no-plusplus: 0, no-param-reassign: 0, no-multi-assign: 0 */
 
+/**
+ * source from https://github.com/peterolson/BigInteger.js
+ */
+
 'use strict';
 
 const BASE = 1e7;

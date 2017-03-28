@@ -1,5 +1,9 @@
 /* eslint no-bitwise: 0, no-plusplus: 0 */
 
+/**
+ * source from https://github.com/KvanTTT/BaseNcoding
+ */
+
 const alphabets = {};
 
 alphabets['32'] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
