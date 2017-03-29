@@ -1,3 +1,69 @@
+<style>
+  #onePassPanel {
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    border-radius: 10px;
+    padding: 5px;
+    background-color: #ccc;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  .opp-title {
+    float: left;
+  }
+
+  .opp-ctrl-btns {
+    float: right;
+  }
+
+  .opp-ctrl-btns a {
+    cursor: pointer;
+    margin: 0 3px;
+  }
+
+  #onePassPanel hr {
+    clear: both;
+    margin: 3px 0;
+  }
+
+  .fg label {
+    display: inline-block;
+    text-align: right;
+    width: 6em;
+
+    margin-right: 0.5em;
+  }
+
+  .fg input,
+  .fg select {
+    width: 12em;
+    vertical-align: text-bottom;
+    background-color: white;
+  }
+
+  .cg {
+
+    text-align: center;
+    margin-top: 5px;
+  }
+
+  .cg p {
+    max-width: 16em;
+    word-break: break-all;
+    margin: 5px;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+  }
+
+</style>
+
 <div id="onePassPanel">
   <header>
     <div class="opp-title">
@@ -6,30 +72,30 @@
     </div>
     <div class="opp-ctrl-btns">
       <a title="help">?</a>
-      <a title="expand/fold">+</a>
-      <a title="close">&times;</a>
+      <a id="toggler" title="expand/fold">+</a>
+      <a title="close">×</a>
     </div>
   </header>
   <hr>
-  <form onsubmit="return false" name="onePass">
+  <form id="onePass">
     <div class="fg">
       <label for="domain">域名(*)</label>
-      <input name="domain" value="{{=it.domain}}" required>
+      <input id="domain" value="{{=it.domain}}" required>
     </div>
 
     <div class="fg">
       <label for="name">用户名</label>
-      <input name="name" value="">
+      <input id="name" value="">
     </div>
 
     <div class="fg">
       <label for="pass">主密码(*)</label>
-      <input name="pass" type="password" value="" autocomplete="off" required>
+      <input id="pass" type="password" value="" pattern=".{6,}" maxlength="10086" autocomplete="off" placeholder="至少6位" required>
     </div>
 
     <div class="fg">
       <label for="passOutLen">密码长度</label>
-      <select name="passOutLen" required>
+      <select id="passOutLen" required>
         {{~it.passLenRange :value}}
          <!-- htmlmin:ignore --><option value="{{=value}}" {{?it.passOutLen===value}}selected="true"{{?}}>{{=value}}</option><!-- htmlmin:ignore -->
         {{~}}
@@ -39,7 +105,7 @@
     <div class="optg" hidden>
       <div class="fg">
         <label for="charset">密码字符集</label>
-        <select name="charset" required>
+        <select id="charset" required>
           <option value="94">所有可打印字符</option>
           <option value="64">字母、数字以及 + 和 / </option>
           <option value="62">字母和数字</option>
@@ -49,76 +115,21 @@
 
       <div class="fg">
         <label for="itCount">迭代次数</label>
-        <input name="itCount" value="{{=it.itCount}}" maxlength="4" required>
+        <input id="itCount" value="{{=it.itCount}}" type="number" max="9999" required>
       </div>
 
       <div class="fg">
         <label for="salt">盐(salt)</label>
-        <input name="salt" value="{{=it.salt}}">
+        <input id="salt" value="{{=it.salt}}">
       </div>
     </div>
 
     <div class="cg">
       <button type="submit">生成密码</button>
-      <button id="clean-op">清除密码</button>
+      <button type="button" id="op_clean">清除密码</button>
       <p hidden>
-        <output id="keygen"></output>
+        <output id="op_keygen"></output>
       </p>
     </div>
   </form>
-
-  <style>
-    #onePassPanel {
-      position: fixed;
-      z-index: 1000;
-      top: 0;
-      right: 0;
-      border-radius: 10px;
-      padding: 5px;
-      background-color: #ccc;
-    }
-
-    .opp-title {
-      float: left;
-    }
-
-    .opp-ctrl-btns {
-      float: right;
-    }
-
-    .opp-ctrl-btns a {
-      cursor: pointer;
-      margin: 0 3px;
-    }
-
-    #onePassPanel hr {
-      clear: both;
-      margin: 3px 0;
-    }
-
-    .fg label {
-      display: inline-block;
-      text-align: right;
-      width: 6em;
-
-      margin-right: 0.5em;
-    }
-
-    .fg input,
-    .fg select {
-      width: 12em;
-      background-color: white;
-    }
-
-    .cg {
-
-      text-align: center;
-      margin-top: 5px;
-    }
-
-    .cg p {
-      margin: 5px;
-    }
-
-  </style>
 </div>

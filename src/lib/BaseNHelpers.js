@@ -6,6 +6,23 @@ alphabets['64'] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz012345678
 alphabets['85'] = '!"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstu';
 alphabets['91'] = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%&()*+,./:;<=>?@[]^_`{|}~"';
 
+const numberChars = '0123456789';
+const lowerCaseChars = 'abcdefghijklmnopqrstuvwxyz';
+const upperCaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+export function generateAlphabet(type) {
+  switch (type) {
+    case 10:
+      return numberChars;
+    case 62:
+      return upperCaseChars + lowerCaseChars + numberChars;
+    case 64:
+      return upperCaseChars + lowerCaseChars + numberChars + '+/';
+    case 94:
+      return new Array(94).fill(0).map((v, i) => String.fromCharCode(i + 33)).join('');
+  }
+}
+
 export const twoInPowerN = [];
 
 for (let i = 0; i < 8; i++) {
