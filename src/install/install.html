@@ -23,6 +23,7 @@
     section {
       margin: 30px 0;
     }
+
     .btn {
       cursor: pointer;
     }
@@ -30,14 +31,37 @@
     article {
       margin: 2em auto;
     }
+
+    .form-inline {
+      flex-direction: column;
+    }
+
+    .form-inline .form-group {
+      width: 100%;
+      margin-bottom: .5rem;
+    }
+
+    .form-inline label {
+      flex: 2;
+      justify-content: flex-start;
+    }
+
+    .form-inline .form-control {
+      width: 40%;
+      justify-content: flex-start;
+    }
+
+    .form-inline .text-muted {
+      flex: 6;
+    }
   </style>
 </head>
 <body>
   <article class="container">
-    <h1 class="display-1">OnePass (v$VERSION$)</h1>
+    <h1 class="display-1">OnePass <small class="text-muted">(v{{=it.version}})</small></h1>
 
     <p class="lead">
-      <a href="http://e-cloud.github.com/1pass4all">OnePass</a>是
+      <a href="http://e-cloud.github.com/1pass">OnePass</a> 是
       一个小书签（bookmarklet，或译为书签工具），用于方便而安全地生成密码。
       其脱胎于郑辉先生的<a href="http://hzheng.github.com/1pass4all">1pass4all</a>。
       更详细的介绍可参见 <a href="http://en.zhenghui.org/2012/02/26/one-pass-for-all-intro_CN/">原理</a> 与 <a href="">变动之处</a>。
@@ -50,65 +74,52 @@
         <a href="http://en.wikipedia.org/wiki/Salt_(cryptography)">密码盐</a>）。
       </p>
 
-      <div class="card w-75">
-        <form class="m-4" id="install-form">
+      <div class="card">
+        <form class="m-4 form-inline" id="install-form">
           <div class="form-group">
-            <label class="col-form-label" for="passLen">密码长度：</label>
-            <div class="">
-              <select class="form-control" id="passLen"></select>
-              <span class="form-text text-muted">（越长越安全）</span>
-            </div>
+            <label for="passLen">密码长度：</label>
+            <select class="form-control custom-select mx-sm-3" id="passLen" required>
+              {{~it.passLenRange :value}}
+              <option value="{{=value}}" {{?it.passLen===value}}selected="true"{{?}}>{{=value}}</option>
+              {{~}}
+            </select>
+            <span class="text-muted">（越长越安全）</span>
           </div>
 
           <div class="form-group">
-            <label class="col-form-label" for="passBase">密码字符集：</label>
-            <div class="">
-              <select class="form-control" id="passBase">
-                <option value="94">
-                  所有可打印字符
-                </option>
-                <option value="64">
-                  字母、数字以及+和/
-                </option>
-                <option value="62">
-                  字母和数字
-                </option>
-                <option value="10">
-                  只含数字
-                </option>
-              </select>
-              <span class="form-text text-muted">（字符范围越广越安全）</span>
-            </div>
+            <label for="charset">密码字符集：</label>
+            <select class="form-control custom-select mx-sm-3" id="charset" required>
+              <option value="94">所有可打印字符</option>
+              <option value="64">字母、数字以及 + 和 /</option>
+              <option value="62">字母和数字</option>
+              <option value="10">只含数字</option>
+            </select>
+            <span class="text-muted">（字符范围越广越安全）</span>
           </div>
 
           <div class="form-group">
-            <label class="col-form-label" for="iteration">迭代次数：</label>
-            <div class="">
-              <input class="form-control"
-                     id="iteration"
-                     type="number"
-                     maxlength="4"
-                     value="$ITERATION"/>
-              <span class="form-text text-muted">（范围0-9999，次数越多越安全，但生成速度越慢）</span>
-            </div>
+            <label for="iteration">迭代次数：</label>
+            <input class="form-control mx-sm-3"
+                   id="iteration"
+                   type="number"
+                   min="0"
+                   max="9999"
+                   value="{{=it.iteration}}"/>
+            <span class="text-muted">（范围0-9999，次数越多越安全，但生成速度越慢）</span>
           </div>
 
           <div class="form-group">
-            <label class="col-form-label" for="salt">密码盐（salt）：</label>
-            <div class="">
-              <input class="form-control" id="salt" size="64" value="$SALT"/>
-              <span class="form-text text-muted">（强烈建议 <button class="btn btn-sm btn-info"
-                                                               type="button">换盐</button>）</span>
-            </div>
+            <label for="salt">密码盐（salt）：</label>
+            <input class="form-control mx-sm-3" id="salt" value="{{=it.salt}}"/>
+            <span class="text-muted">（强烈建议 <button class="btn btn-sm btn-info"
+                                                   type="button" id="change-salt">换盐</button>）</span>
           </div>
 
-          <div class="form-group">
+          <div class="form-group mb-0">
             <button class="btn btn-primary" type="submit">定制</button>
           </div>
         </form>
       </div>
-
-
     </section>
 
     <section class="install">
@@ -116,7 +127,7 @@
 
       <div class="card card-outline-primary mb-3 w-75">
         <div class="card-block">
-          <h4 class="card-title"><a id="bookmarklet" href="javascript:$GENERATED_SCRIPT$">非IE浏览器</a>（用于非IE浏览器，如Firefox、Chrome、Safari、Opera）
+          <h4 class="card-title"><a id="bookmarklet" href="javascript:void(0)">非IE浏览器</a>（用于非IE浏览器，如Firefox、Chrome、Safari、Edge）
           </h4>
 
           <p class="card-text">
@@ -222,6 +233,6 @@
     </section>
   </article>
 
-  <script src="../src/install.js"></script>
+  <script src="install.js"></script>
 </body>
 </html>
