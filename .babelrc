@@ -1,18 +1,4 @@
 {
   "plugins": ["transform-exponentiation-operator"],
-  "env": {
-    "Test": {
-      "presets": ["es2015"]
-    },
-    "Development": {
-      "presets": [
-        "es2015-rollup"
-      ]
-    },
-    "Production": {
-      "presets": [
-        "es2015-rollup"
-      ]
-    }
-  }
+  "presets": ["es2015"]
 }
