@@ -1,4 +1,8 @@
 <style>
+  #onePassPanel * {
+    box-sizing: border-box;
+  }
+
   #onePassPanel {
     position: fixed;
     z-index: 1000;
@@ -42,7 +46,6 @@
   .fg input,
   .fg select {
     width: 12em;
-    vertical-align: text-bottom;
     background-color: white;
   }
 
@@ -115,7 +118,7 @@
 
       <div class="fg">
         <label for="itCount">迭代次数</label>
-        <input id="itCount" value="{{=it.itCount}}" type="number" max="9999" required>
+        <input id="itCount" value="{{=it.itCount}}" type="number" min="0" max="9999" required>
       </div>
 
       <div class="fg">
