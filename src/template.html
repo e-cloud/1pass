@@ -1,9 +1,10 @@
 <style>
-  #onePassPanel * {
+  .onePassPanel * {
     box-sizing: border-box;
+    margin: 0;
   }
 
-  #onePassPanel {
+  .onePassPanel {
     position: fixed;
     z-index: 1000;
     top: 0;
@@ -30,9 +31,13 @@
     margin: 0 3px;
   }
 
-  #onePassPanel hr {
+  .onePassPanel hr {
     clear: both;
     margin: 3px 0;
+  }
+
+  .fg {
+    padding: 2px 0;
   }
 
   .fg label {
@@ -45,7 +50,9 @@
 
   .fg input,
   .fg select {
+    border: 0;
     width: 12em;
+    height: 1.5em;
     background-color: white;
   }
 
@@ -67,7 +74,7 @@
 
 </style>
 
-<div id="onePassPanel">
+<div class="onePassPanel">
   <header>
     <div class="opp-title">
       <span>OnePass</span>
