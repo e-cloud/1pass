@@ -1,5 +1,4 @@
 import JsSHA from 'jssha/src/sha3'
-import { template } from './lib/doT'
 import tpl from './template.html'
 import { extractCoreDomain } from './domainExtractor'
 import { generateAlphabet } from './lib/BaseNHelpers'
@@ -18,16 +17,16 @@ const state = {
 };
 
 const octopus = {
-  init() {
-    view.init();
+  init(state) {
+    view.init(state);
   },
   generate(info) {
     const hashedKey = octopus.hash(info);
-    const hmac= octopus.hmac(hashedKey, info);
+    const hmac = octopus.hmac(hashedKey, info);
     return octopus.mapKeyToCharset(hmac, info.passOutLen, info.charset);
   },
   hash(info) {
-    const sha3 = new JsSHA("SHA3-512", "TEXT", {numRounds: info.itCount});
+    const sha3 = new JsSHA("SHA3-512", "TEXT", { numRounds: info.itCount });
     sha3.update(info.password);
     return sha3.getHash("HEX");
   },
@@ -51,10 +50,12 @@ const octopus = {
 };
 
 const view = {
-  init() {
-    const text = template(tpl)(state);
+  init(state) {
+    view.removePanel();
+    const text = view.preRender(tpl, state);
 
     const div = document.createElement('div');
+    div.id = 'onepass-wrapper'
     div.innerHTML = text;
 
     view.bindEventHandlers(div);
@@ -104,12 +105,27 @@ const view = {
     });
 
     $$('a[title="close"]').addEventListener('click', function () {
-      context.parentNode.removeChild(context);
+      view.removePanel();
     });
+  },
+  preRender(text, state){
+    const passOutRange = state.passLenRange.map(
+      val => `<option value="${val}" ${state.passOutLen === val ? 'selected="true"' : ''}>${val}</option>`)
+
+    return text.replace('$VERSION$', state.version)
+      .replace('$DOMAIN$', state.domain)
+      .replace('$IT_COUNT$', state.itCount)
+      .replace('$SALT$', state.salt)
+      .replace('$PASS_OUT_RANGE$', passOutRange)
   },
   render(elem) {
     document.body.appendChild(elem);
+  },
+  removePanel() {
+    const context = $('#onepass-wrapper')
+    if(context)
+      context.parentNode.removeChild(context)
   }
 };
 
-octopus.init();
+octopus.init(state);

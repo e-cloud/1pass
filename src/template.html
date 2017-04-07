@@ -78,7 +78,7 @@
   <header>
     <div class="opp-title">
       <span>OnePass</span>
-      <span>v{{=it.version}}</span>
+      <span>v$VERSION$</span>
     </div>
     <div class="opp-ctrl-btns">
       <a title="help">?</a>
@@ -90,7 +90,7 @@
   <form id="onePass">
     <div class="fg">
       <label for="domain">域名(*)</label>
-      <input id="domain" value="{{=it.domain}}" required>
+      <input id="domain" value="$DOMAIN$" required>
     </div>
 
     <div class="fg">
@@ -106,9 +106,7 @@
     <div class="fg">
       <label for="passOutLen">密码长度</label>
       <select id="passOutLen" required>
-        {{~it.passLenRange :value}}
-         <!-- htmlmin:ignore --><option value="{{=value}}" {{?it.passOutLen===value}}selected="true"{{?}}>{{=value}}</option><!-- htmlmin:ignore -->
-        {{~}}
+        $PASS_OUT_RANGE$
       </select>
     </div>
 
@@ -125,12 +123,12 @@
 
       <div class="fg">
         <label for="itCount">迭代次数</label>
-        <input id="itCount" value="{{=it.itCount}}" type="number" min="0" max="9999" required>
+        <input id="itCount" value="$IT_COUNT$" type="number" min="0" max="9999" required>
       </div>
 
       <div class="fg">
         <label for="salt">盐(salt)</label>
-        <input id="salt" value="{{=it.salt}}">
+        <input id="salt" value="$SALT$">
       </div>
     </div>
 
