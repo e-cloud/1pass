@@ -8,6 +8,7 @@ import {rollup} from 'rollup'
 import {generate} from './rollup.config'
 import _ from 'lodash'
 import { version } from './package.json'
+import {create} from 'browser-sync'
 
 const state = {
   version: version,
@@ -16,6 +17,8 @@ const state = {
   iteration: 100,
   salt: '9rjixtK35p091K2glFZWDgueRFqmSNfX'
 };
+
+const browserSync = create()
 
 function dotPlugin(state) {
   return through.obj(function (file, encoding, cb) {
@@ -68,6 +71,29 @@ gulp.task('build', ['install'], function () {
       dest: './dist/bundle.js'
     });
   });
+})
+
+// create a task that ensures the `js` task is complete before
+// reloading browsers
+gulp.task('js-watch', ['build'], function (done) {
+  browserSync.reload();
+  done();
+})
+
+// use default task to launch Browsersync and watch JS files
+gulp.task('serve', ['build'], function () {
+
+  // Serve files from the root of this project
+  browserSync.init({
+    server: {
+      baseDir: './dist',
+      index: 'install.html'
+    }
+  });
+
+  // add browserSync.reload to the tasks array to make
+  // all browsers reload after tasks are complete.
+  gulp.watch('src/**', ['js-watch']);
 })
 
 gulp.task('default', ['build'])
