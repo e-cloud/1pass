@@ -4,11 +4,11 @@ import { template } from './src/lib/doT'
 import gulp from 'gulp'
 import through from 'through2'
 import rename from 'gulp-rename'
-import {rollup} from 'rollup'
-import {generate} from './rollup.config'
+import { rollup } from 'rollup'
+import { generate } from './rollup.config.raw'
 import _ from 'lodash'
 import { version } from './package.json'
-import {create} from 'browser-sync'
+import { create } from 'browser-sync'
 
 const state = {
   version: version,
