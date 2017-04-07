@@ -3,6 +3,8 @@ import nodeResolve from 'rollup-plugin-node-resolve'
 import uglify from 'rollup-plugin-uglify'
 import babel from 'rollup-plugin-babel'
 import html from 'rollup-plugin-html'
+import replace from 'rollup-plugin-replace'
+import { version } from './package.json'
 
 const dotAttrWrapOpen = /\{\{[~?=][^}]+\}\}/;
 const dotAttrWrapClose = /\{\{\/[^}]+\}\}/;
@@ -16,6 +18,9 @@ export function generate() {
     format: 'iife',
     dest: 'demo/bundle.js',
     plugins: [
+      replace({
+        PKG_VERSION: JSON.stringify(version)
+      }),
       nodeResolve(),
       commonjs({
         // non-CommonJS modules will be ignored, but you can also
@@ -41,6 +46,6 @@ export function generate() {
           quote_style: 1,
         },
       }),
-    ],
+    ]
   }
 }

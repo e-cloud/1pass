@@ -8,6 +8,7 @@ import BaseN from './lib/BaseN'
 const $ = (selector, context = document) => context.querySelector(selector);
 
 const state = {
+  version: PKG_VERSION,
   domain: extractCoreDomain(),
   passLenRange: new Array(123).fill(0).map((v, k) => k + 6),
   passOutLen: 16,
