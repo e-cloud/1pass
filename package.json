@@ -9,6 +9,12 @@
     "build": "cross-env NODE_ENV=Production gulp",
     "test": "cross-env NODE_ENV=Test mocha --compilers js:babel-core/register --harmony test/**.spec.js"
   },
+  "repository": "e-cloud/1pass",
+  "author": {
+    "name": "e-cloud",
+    "email": "saintscott119@gmail.com",
+    "url": "//e-cloud.github.io"
+  },
   "private": true,
   "dependencies": {
     "dot": "^1.1.1",
@@ -43,6 +49,6 @@
   },
   "engines": {
     "node": ">= 6.0.0",
-    "npm": ">= 3.0.0"
+    "npm": ">= 4.0.0"
   }
 }
