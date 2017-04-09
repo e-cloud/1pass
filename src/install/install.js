@@ -63,11 +63,11 @@ const view = {
 
     $('#install-form').addEventListener('submit', function (event) {
       event.preventDefault();
-      const formElements = event.currentTarget.elements
+      const formElements = event.target.elements
       view.updateLinks(formElements)
     });
   },
-  updateLinks(formElements){
+  updateLinks(formElements) {
     const data = octopus.generate({
       charset: parseInt(formElements.charset.value),
       passLen: parseInt(formElements.passLen.value),

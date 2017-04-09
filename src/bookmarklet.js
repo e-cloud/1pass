@@ -1,5 +1,5 @@
 import JsSHA from 'jssha/src/sha3'
-import tpl from './template.html'
+import tpl from './bookmarklet.html'
 import { extractCoreDomain } from './domainExtractor'
 import { generateAlphabet } from './lib/BaseNHelpers'
 import BaseN from './lib/BaseN'
@@ -61,7 +61,7 @@ const view = {
     view.bindEventHandlers(div);
     view.render(div);
   },
-  showGeneratePass(pwd){
+  showGeneratePass(pwd) {
     $('#op_keygen').textContent = pwd;
     const pElem = $('.cg p[hidden]');
     if (pElem) {
@@ -71,7 +71,7 @@ const view = {
   bindEventHandlers(context) {
     const $$ = (selector) => $(selector, context)
     $$('#toggler').addEventListener('click', function (event) {
-      const triggerElem = event.currentTarget;
+      const triggerElem = event.target;
       const targetElem = $$('.optg');
       const isHidden = targetElem.getAttribute('hidden');
 
@@ -86,7 +86,7 @@ const view = {
 
     $$('#onePass').addEventListener('submit', function (event) {
       event.preventDefault();
-      const formElements = event.currentTarget.elements
+      const formElements = event.target.elements
       const gen = octopus.generate({
         domain: formElements.domain.value,
         charset: parseInt(formElements.charset.value),
@@ -108,7 +108,7 @@ const view = {
       view.removePanel();
     });
   },
-  preRender(text, state){
+  preRender(text, state) {
     const passOutRange = state.passLenRange.map(
       val => `<option value="${val}" ${state.passOutLen === val ? 'selected="true"' : ''}>${val}</option>`)
 
@@ -123,7 +123,7 @@ const view = {
   },
   removePanel() {
     const context = $('#onepass-wrapper')
-    if(context)
+    if (context)
       context.parentNode.removeChild(context)
   }
 };
