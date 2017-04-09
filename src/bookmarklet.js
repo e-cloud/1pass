@@ -3,6 +3,7 @@ import tpl from './bookmarklet.html'
 import { extractCoreDomain } from './domainExtractor'
 import { generateAlphabet } from './lib/BaseNHelpers'
 import BaseN from './lib/BaseN'
+import selectText from './lib/select-text'
 
 const $ = (selector, context = document) => context.querySelector(selector);
 
@@ -106,6 +107,10 @@ const view = {
 
     $$('a[title="close"]').addEventListener('click', function () {
       view.removePanel();
+    });
+
+    $$('#op_keygen').addEventListener('click', function (event) {
+      selectText(event.target)
     });
   },
   preRender(text, state) {
