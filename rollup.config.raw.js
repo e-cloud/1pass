@@ -4,7 +4,8 @@ import uglify from 'rollup-plugin-uglify'
 import babel from 'rollup-plugin-babel'
 import html from 'rollup-plugin-html'
 import replace from 'rollup-plugin-replace'
-import { version } from './package.json'
+
+const version = require('./package.json').version
 
 const dotAttrWrapOpen = /\{\{[~?=][^}]+\}\}/;
 const dotAttrWrapClose = /\{\{\/[^}]+\}\}/;
@@ -12,7 +13,7 @@ const dotAttrWrapPair = [dotAttrWrapOpen, dotAttrWrapClose];
 
 export function generate() {
   return {
-    entry: 'src/main.js',
+    entry: 'src/bookmarklet.js',
     format: 'iife',
     dest: 'demo/bundle.js',
     plugins: [
@@ -30,6 +31,7 @@ export function generate() {
         include: ['src/**/*.html', 'src/**/*.dot'],
         htmlMinifierOptions: {
           collapseWhitespace: process.env.NODE_ENV === 'Production',
+          minifyCSS: process.env.NODE_ENV === 'Production',
           customAttrSurround: [dotAttrWrapPair],
         },
       }),
