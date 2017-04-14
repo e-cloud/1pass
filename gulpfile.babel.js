@@ -97,8 +97,7 @@ gulp.task('serve', ['build'], function () {
   // Serve files from the root of this project
   browserSync.init({
     server: {
-      baseDir: './dist',
-      index: 'install.html'
+      baseDir: './dist'
     }
   });
 
