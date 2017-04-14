@@ -1,6 +1,6 @@
 {
   "name": "1pass",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "license": "MIT",
   "scripts": {
     "commitmsg": "validate-commit-msg",
