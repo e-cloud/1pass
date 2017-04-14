@@ -8,6 +8,7 @@
     "roll-dev": "cross-env NODE_ENV=Development rollup -c -w",
     "build": "cross-env NODE_ENV=Production gulp",
     "test": "cross-env NODE_ENV=Test mocha --compilers js:babel-core/register --harmony test/**.spec.js",
+    "release": "standard-version",
     "gh-deploy": "bash ./gh-pages-deploy.sh"
   },
   "repository": "e-cloud/1pass",
@@ -48,6 +49,7 @@
     "rollup-plugin-uglify": "^1.0.1",
     "rollup-watch": "^3.2.2",
     "run-sequence": "^1.2.2",
+    "standard-version": "^4.0.0",
     "validate-commit-msg": "^2.11.1"
   },
   "engines": {
