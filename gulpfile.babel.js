@@ -9,6 +9,8 @@ import { generate } from './rollup.config.raw'
 import _ from 'lodash'
 import { version } from './package.json'
 import { create } from 'browser-sync'
+import del from 'del'
+import runSequence from 'run-sequence';
 
 const state = {
   version: version,
@@ -42,12 +44,13 @@ gulp.task('build-install-tpl', function () {
   return gulp.src('./src/install/install.html')
     .pipe(dotPlugin(state))
     .pipe(rename({
-      extname: ".html"
+      basename: 'index',
+      extname: '.html'
     }))
     .pipe(gulp.dest('./dist/'))
 })
 
-gulp.task('install', ['env', 'build-install-tpl'], function () {
+gulp.task('build-install-js', function () {
   const cloneConfig = _.merge({}, generate(), {
     entry: './src/install/install.js'
   })
@@ -57,6 +60,10 @@ gulp.task('install', ['env', 'build-install-tpl'], function () {
       dest: 'dist/install.js'
     });
   });
+})
+
+gulp.task('install', [], function (callback) {
+  runSequence('env', 'clean', 'build-install-tpl', 'build-install-js', callback);
 })
 
 gulp.task('env', function (cb) {
@@ -79,6 +86,10 @@ gulp.task('js-watch', ['build'], function (done) {
   browserSync.reload();
   done();
 })
+
+gulp.task('clean', function () {
+  return del('./dist');
+});
 
 // use default task to launch Browsersync and watch JS files
 gulp.task('serve', ['build'], function () {
