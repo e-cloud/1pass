@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.1.1"></a>
+## [0.1.1](https://github.com/e-cloud/1pass/compare/v0.1.0...v0.1.1) (2017-04-14)
+
+
+### Bug Fixes
+
+* problem links in install.html ([b514230](https://github.com/e-cloud/1pass/commit/b514230))
+
+
+
 <a name="0.1.0"></a>
 # 0.1.0 (2017-04-14)
 
