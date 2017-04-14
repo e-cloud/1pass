@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "precommit": "validate-commit-msg",
+    "commitmsg": "validate-commit-msg",
     "serve": "browser-sync start -c bs-config.js",
     "roll-dev": "cross-env NODE_ENV=Development rollup -c -w",
     "build": "cross-env NODE_ENV=Production gulp",
