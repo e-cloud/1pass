@@ -47,7 +47,7 @@ const octopus = {
       .replace(/passOutLen:.+?,/, `passOutLen:${formData.passLen},`)
       .replace(/charset:.+?,/, `charset:${formData.charset},`)
       .replace(/itCount:.+?,/, `itCount:${formData.iteration},`)
-      .replace(/salt:.+?}/, `salt:"${formData.salt}"}`)
+      .replace(/salt:.+?}/, `salt:${JSON.stringify(formData.salt)}}`)
   }
 };
 

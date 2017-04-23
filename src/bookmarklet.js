@@ -59,6 +59,8 @@ const view = {
     div.id = 'onepass-wrapper'
     div.innerHTML = text;
 
+    $('#salt', div).value = state.salt
+
     view.bindEventHandlers(div);
     view.render(div);
   },
@@ -120,7 +122,6 @@ const view = {
     return text.replace('$VERSION$', state.version)
       .replace('$DOMAIN$', state.domain)
       .replace('$IT_COUNT$', state.itCount)
-      .replace('$SALT$', state.salt)
       .replace('$PASS_OUT_RANGE$', passOutRange)
   },
   render(elem) {
