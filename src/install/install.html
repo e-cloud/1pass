@@ -54,11 +54,23 @@
     .form-inline .text-muted {
       flex: 6;
     }
+
+    @media (max-width: 576px) {
+      .form-inline label {
+        display: block;
+      }
+
+      .form-inline .form-control {
+        width: 100%;
+        display: block;
+        margin-bottom: .5em;
+      }
+    }
   </style>
 </head>
 <body>
   <article class="container">
-    <h1 class="display-1">OnePass <small class="text-muted">(v{{=it.version}})</small></h1>
+    <h1>OnePass <small class="text-muted">(v{{=it.version}})</small></h1>
 
     <p class="lead">
       <a href="//github.com/e-cloud/1pass">OnePass</a> 是
@@ -125,7 +137,7 @@
     <section class="install">
       <h2>安装：</h2>
 
-      <div class="card card-outline-primary mb-3 w-75">
+      <div class="card card-outline-primary mb-3 col-xs-12 col-md-10">
         <div class="card-block">
           <h4 class="card-title"><a id="bookmarklet" href="javascript:void(0)">非IE浏览器</a>（用于非IE浏览器，如Firefox、Chrome、Safari、Edge）
           </h4>
@@ -136,7 +148,7 @@
         </div>
       </div>
 
-      <div class="card card-outline-primary mb-3 w-75">
+      <div class="card card-outline-primary mb-3 col-xs-12 col-md-10">
         <div class="card-block">
           <h4 class="card-title"><a id="mobile" href="mobile.html">移动版</a>（用于手机、他人电脑、非信任网站或非浏览器应用上）</h4>
 
@@ -146,7 +158,7 @@
         </div>
       </div>
 
-      <div class="card card-outline-primary mb-3 w-75">
+      <div class="card card-outline-primary mb-3 col-xs-12 col-md-10">
         <div class="card-block">
           <h4 class="card-title"><a id="mobile_offline" href="$MOBILE_URL$">移动离线版</a>（供移动设备离线使用）</h4>
 
@@ -157,7 +169,7 @@
         </div>
       </div>
 
-      <div class="card card-outline-primary w-75">
+      <div class="card card-outline-primary col-xs-12 col-md-10">
         <div class="card-block">
           <h4 class="card-title"><a href="//github.com/e-cloud/1pass">高级定制</a>（供高级用户使用）</h4>
 
