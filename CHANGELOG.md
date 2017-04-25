@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.2.0"></a>
+# [0.2.0](https://github.com/e-cloud/1pass/compare/v0.1.2...v0.2.0) (2017-04-25)
+
+
+### Bug Fixes
+
+* demo test ([3973bef](https://github.com/e-cloud/1pass/commit/3973bef))
+* handle special char like quotes ([d0b87ec](https://github.com/e-cloud/1pass/commit/d0b87ec))
+
+
+### Features
+
+* add mobile pages ([fb93bb2](https://github.com/e-cloud/1pass/commit/fb93bb2))
+* auto save generated password to clipboard on click ([5b964af](https://github.com/e-cloud/1pass/commit/5b964af))
+* update install for mobile pages ([f99fcef](https://github.com/e-cloud/1pass/commit/f99fcef))
+
+
+
 <a name="0.1.2"></a>
 ## [0.1.2](https://github.com/e-cloud/1pass/compare/v0.1.1...v0.1.2) (2017-04-14)
 
