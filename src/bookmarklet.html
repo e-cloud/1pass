@@ -74,6 +74,21 @@
     -ms-user-select: text;
     user-select: text;
   }
+
+  #op_toastr {
+    position: absolute;
+    top: 1em;
+    left: 0;
+    width: 100%;
+    text-align: center;
+  }
+
+  #op_toastr span {
+    background-color: #434343;
+    padding: 5px 10px;
+    border-radius: 5px;
+    color: white;
+  }
 </style>
 
 <div class="onePassPanel">
@@ -140,6 +155,9 @@
       <p hidden>
         <output id="op_keygen"></output>
       </p>
+      <div id="op_toastr" hidden>
+        <span>密码已复制到剪贴板</span>
+      </div>
     </div>
   </form>
 </div>

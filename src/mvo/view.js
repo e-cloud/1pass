@@ -1,4 +1,4 @@
-import selectText from '../lib/select-text'
+import selectText, { copyToClipboard } from '../lib/select-text'
 import tpl from '../bookmarklet.html'
 import * as octopus from './octopus'
 
@@ -78,6 +78,16 @@ function bindEventHandlers(context) {
 
   $$('#op_keygen').addEventListener('click', function (event) {
     selectText(event.target)
+    if (copyToClipboard()) {
+      $$('#op_toastr').removeAttribute('hidden')
+      if (timer) {
+        clearTimeout(timer)
+      }
+      timer = setTimeout(function () {
+        $$('#op_toastr').setAttribute('hidden', '')
+        timer = null
+      }, 3000)
+    }
   });
 }
 
