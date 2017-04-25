@@ -1,6 +1,6 @@
 const $ = (selector, context = document) => context.querySelector(selector);
 
-function getScript() {
+function getScript(url) {
   return new Promise(function (resolve, reject) {
     const xhr = new XMLHttpRequest()
 
@@ -12,24 +12,44 @@ function getScript() {
       }
     })
 
-    xhr.open('GET', './bundle.js')
+    xhr.open('GET', url)
     xhr.send()
   })
 }
 
+function objectToQuerystring(obj) {
+  return Object.keys(obj).reduce(function (str, key, i) {
+    let delimiter = (i === 0) ? '?' : '&';
+    key = encodeURIComponent(key);
+    let val = encodeURIComponent(obj[key]);
+    return [str, delimiter, key, '=', val].join('');
+  }, '');
+}
+
+function utf8_to_b64(str) {
+  return window.btoa(unescape(encodeURIComponent(str)));
+}
+
 const state = {
-  source: ''
+  bookmarkletSrc: ''
 }
 
 const octopus = {
   init() {
-    getScript()
+    getScript('./bundle.js')
       .then(function (source) {
-        state.source = source
+        return getScript('./mobile-offline.html')
+          .then(function (offlineSrc) {
+            return [source, offlineSrc]
+          })
+      })
+      .catch(function (err) {
+        alert('小书签脚本加载出错，请刷新重试')
+      })
+      .then(function ([source, offlineSrc]) {
+        state.bookmarkletSrc = source
+        state.offlineSrc = offlineSrc
         view.init();
-
-      }, function (err) {
-        alert('小书签脚步加载出错，请刷新重试')
       })
   },
   genNewSalt(size = 32) {
@@ -42,11 +62,11 @@ const octopus = {
     }
     return salts.join('');
   },
-  generate(formData) {
-    return state.source
-      .replace(/passOutLen:.+?,/, `passOutLen:${formData.passLen},`)
+  generate(source, formData) {
+    return source
+      .replace(/passOutLen:.+?,/, `passOutLen:${formData.passOutLen},`)
       .replace(/charset:.+?,/, `charset:${formData.charset},`)
-      .replace(/itCount:.+?,/, `itCount:${formData.iteration},`)
+      .replace(/itCount:.+?,/, `itCount:${formData.itCount},`)
       .replace(/salt:.+?}/, `salt:${JSON.stringify(formData.salt)}}`)
   }
 };
@@ -68,14 +88,21 @@ const view = {
     });
   },
   updateLinks(formElements) {
-    const data = octopus.generate({
+    const data = {
       charset: parseInt(formElements.charset.value),
-      passLen: parseInt(formElements.passLen.value),
-      iteration: parseInt(formElements.iteration.value),
+      passOutLen: parseInt(formElements.passLen.value),
+      itCount: parseInt(formElements.iteration.value),
       salt: formElements.salt.value || ''
-    });
+    }
+    const bookmarkletSrc = octopus.generate(state.bookmarkletSrc, data);
 
-    $('#bookmarklet').setAttribute('href', `javascript:${data}`)
+    $('#bookmarklet').setAttribute('href', `javascript:${bookmarkletSrc}`)
+
+    const offlineSrc = octopus.generate(state.offlineSrc, data)
+
+    $('#mobile_offline').setAttribute('href', `data:text/html;charset=utf-8;base64,${utf8_to_b64(offlineSrc)}`)
+
+    $('#mobile').setAttribute('href', `mobile.html${objectToQuerystring(data)}`)
   }
 }
 
