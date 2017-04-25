@@ -2,7 +2,9 @@
 
 import { template } from './src/lib/doT'
 import gulp from 'gulp'
+import fs from 'fs'
 import through from 'through2'
+import replaceStream from 'replacestream'
 import rename from 'gulp-rename'
 import { rollup } from 'rollup'
 import { generate } from './rollup.config.raw'
@@ -10,7 +12,7 @@ import _ from 'lodash'
 import { version } from './package.json'
 import { create } from 'browser-sync'
 import del from 'del'
-import runSequence from 'run-sequence';
+import runSequence from 'run-sequence'
 
 const state = {
   version: version,
@@ -63,7 +65,60 @@ gulp.task('build-install-js', function () {
 })
 
 gulp.task('install', [], function (callback) {
-  runSequence('env', 'clean', 'build-install-tpl', 'build-install-js', callback);
+  runSequence('clean', 'build-install-tpl', 'build-install-js', callback);
+})
+
+gulp.task('mobile', function () {
+  const cloneConfig = _.merge({}, generate(), {
+    entry: './src/mobile/mobile.js'
+  })
+  return rollup(cloneConfig).then(function (bundle) {
+    return bundle.write({
+      format: 'iife',
+      dest: 'dist/mobile.js'
+    });
+  });
+})
+
+gulp.task('mobile:offline', function () {
+  const cloneConfig = _.merge({}, generate(), {
+    entry: './src/mobile/mobile-offline.js'
+  })
+  return rollup(cloneConfig).then(function (bundle) {
+    return bundle.write({
+      format: 'iife',
+      dest: 'dist/mobile-offline.js'
+    });
+  });
+})
+
+function replaceScript() {
+  return through.obj(function (file, encoding, cb) {
+    if (file.isNull()) {
+      // nothing to do
+      return callback(null, file);
+    }
+
+    if (file.isStream()) {
+      this.emit('error', new Error('Streams not supported!'));
+      cb(null, file)
+    } else if (file.isBuffer()) {
+      const template$ = fs.createReadStream('./src/mobile/mobile.html')
+        .pipe(replaceStream('$_SCRIPT_$', file.contents.toString(encoding)))
+
+      file.contents = template$
+      cb(null, file)
+    }
+  })
+}
+
+gulp.task('mobile:all', ['mobile', 'mobile:offline'], function () {
+  return gulp.src(['./dist/mobile.js', './dist/mobile-offline.js'])
+    .pipe(replaceScript())
+    .pipe(rename({
+      extname: '.html'
+    }))
+    .pipe(gulp.dest('./dist/'))
 })
 
 gulp.task('env', function (cb) {
@@ -71,8 +126,10 @@ gulp.task('env', function (cb) {
   cb()
 })
 
-gulp.task('build', ['install'], function () {
+gulp.task('build', ['install', 'mobile:all'], function () {
+  process.env.NODE_ENV = 'Production'
   return rollup(generate()).then(function (bundle) {
+    process.env.NODE_ENV = 'Development'
     return bundle.write({
       format: 'iife',
       dest: './dist/bundle.js'
@@ -106,4 +163,6 @@ gulp.task('serve', ['build'], function () {
   gulp.watch('src/**', ['js-watch']);
 })
 
-gulp.task('default', ['build'])
+gulp.task('default', function (cb) {
+  runSequence('env', ['build'], cb)
+})
