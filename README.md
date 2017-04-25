@@ -39,6 +39,8 @@ In 1pass4all, the encryption code is not considerate enough.
 
 * It does not provide auto-login functionality.
 
+* bookmarklet size is about 18.5kb
+
 
 Installation
 ------------
