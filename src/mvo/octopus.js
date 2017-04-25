@@ -8,6 +8,7 @@ export function init(state) {
 }
 
 export function init_mobile(state) {
+  state.passOutLen = parseInt(state.passOutLen)
   view.init_mobile(state);
 }
 
