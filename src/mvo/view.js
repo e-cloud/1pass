@@ -97,6 +97,7 @@ function bindEventHandlers(context) {
 function bindDragAndDrop(div) {
   let eX, eY, startX, startY, moveListener, frame
   div.addEventListener('mousedown', function (event) {
+    doc.removeEventListener('mousemove', moveListener)
     let target = div.lastElementChild
     startX = event.pageX
     startY = event.pageY
