@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.3.0"></a>
+# [0.3.0](https://github.com/e-cloud/1pass/compare/v0.2.0...v0.3.0) (2017-04-27)
+
+
+### Features
+
+* add drag and move for bookmarklet panel ([202416c](https://github.com/e-cloud/1pass/commit/202416c))
+
+
+
 <a name="0.2.0"></a>
 # [0.2.0](https://github.com/e-cloud/1pass/compare/v0.1.2...v0.2.0) (2017-04-25)
 
