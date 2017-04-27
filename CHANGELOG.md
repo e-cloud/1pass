@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.3.1"></a>
+## [0.3.1](https://github.com/e-cloud/1pass/compare/v0.3.0...v0.3.1) (2017-04-27)
+
+
+### Bug Fixes
+
+* ensure remove listen in case of mouse out of window ([61ef52c](https://github.com/e-cloud/1pass/commit/61ef52c))
+* use client position instead of page position ([c9db36a](https://github.com/e-cloud/1pass/commit/c9db36a))
+
+
+
 <a name="0.3.0"></a>
 # [0.3.0](https://github.com/e-cloud/1pass/compare/v0.2.0...v0.3.0) (2017-04-27)
 
