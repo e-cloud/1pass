@@ -99,13 +99,13 @@ function bindDragAndDrop(div) {
   div.addEventListener('mousedown', function (event) {
     doc.removeEventListener('mousemove', moveListener)
     let target = div.lastElementChild
-    startX = event.pageX
-    startY = event.pageY
+    startX = event.clientX
+    startY = event.clientY
     eX = target.offsetLeft
     eY = target.offsetTop
 
     doc.addEventListener('mousemove', moveListener = function (event) {
-      const currentX = event.pageX, currentY = event.pageY
+      const currentX = event.clientX, currentY = event.clientY
       //cancelAnimationFrame(frame)
       //frame = requestAnimationFrame(function () {
       target.style.left = (currentX - startX + eX) + 'px'
