@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.4.0"></a>
+# [0.4.0](https://github.com/e-cloud/1pass/compare/v0.3.1...v0.4.0) (2017-05-20)
+
+
+### Bug Fixes
+
+* **install:** properly replace salt in offline src ([ce60552](https://github.com/e-cloud/1pass/commit/ce60552))
+* **template:** add proper target for link tag ([71f4788](https://github.com/e-cloud/1pass/commit/71f4788))
+
+
+### Features
+
+* **bookmarklet:** only can move the panel when ctrl key is pressed ([beafa7b](https://github.com/e-cloud/1pass/commit/beafa7b))
+
+
+
 <a name="0.3.1"></a>
 ## [0.3.1](https://github.com/e-cloud/1pass/compare/v0.3.0...v0.3.1) (2017-04-27)
 
