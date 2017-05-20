@@ -1,4 +1,5 @@
-const $ = (selector, context = document) => context.querySelector(selector);
+/* eslint-disable radix, no-plusplus */
+const $ = (selector, context = document) => context.querySelector(selector)
 
 function getScript(url) {
   return new Promise(function (resolve, reject) {
@@ -19,15 +20,15 @@ function getScript(url) {
 
 function objectToQuerystring(obj) {
   return Object.keys(obj).reduce(function (str, key, i) {
-    let delimiter = (i === 0) ? '?' : '&';
-    key = encodeURIComponent(key);
-    let val = encodeURIComponent(obj[key]);
-    return [str, delimiter, key, '=', val].join('');
-  }, '');
+    const delimiter = (i === 0) ? '?' : '&'
+    const encodedKey = encodeURIComponent(key)
+    const val = encodeURIComponent(obj[encodedKey])
+    return [str, delimiter, encodedKey, '=', val].join('')
+  }, '')
 }
 
-function utf8_to_b64(str) {
-  return window.btoa(unescape(encodeURIComponent(str)));
+function utf8ToBase64(str) {
+  return window.btoa(unescape(encodeURIComponent(str)))
 }
 
 const state = {
@@ -43,24 +44,24 @@ const octopus = {
             return [source, offlineSrc]
           })
       })
-      .catch(function (err) {
+      .catch(function () {
         alert('小书签脚本加载出错，请刷新重试')
       })
       .then(function ([source, offlineSrc]) {
         state.bookmarkletSrc = source
         state.offlineSrc = offlineSrc
-        view.init();
+        view.init()
       })
   },
   genNewSalt(size = 32) {
     // base64 characters
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'.split('');
-    const maxCharIndex = chars.length - 1;
-    const salts = [];
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'.split('')
+    const maxCharIndex = chars.length - 1
+    const salts = []
     for (let i = size; i > 0; --i) {
-      salts.push(chars[Math.floor(Math.random() * maxCharIndex)]);
+      salts.push(chars[Math.floor(Math.random() * maxCharIndex)])
     }
-    return salts.join('');
+    return salts.join('')
   },
   generate(source, formData) {
     return source
@@ -69,7 +70,7 @@ const octopus = {
       .replace(/itCount:.+?,/, `itCount:${formData.itCount},`)
       .replace(/salt:\s*?['"][^'"]+['"]/, `salt:${JSON.stringify(formData.salt)}`)
   }
-};
+}
 
 const view = {
   init() {
@@ -79,13 +80,13 @@ const view = {
   bindEventHandlers() {
     $('#change-salt').addEventListener('click', function () {
       $('#salt').value = octopus.genNewSalt()
-    });
+    })
 
     $('#install-form').addEventListener('submit', function (event) {
-      event.preventDefault();
+      event.preventDefault()
       const formElements = event.target.elements
       view.updateLinks(formElements)
-    });
+    })
   },
   updateLinks(formElements) {
     const data = {
@@ -94,13 +95,13 @@ const view = {
       itCount: parseInt(formElements.iteration.value),
       salt: formElements.salt.value || ''
     }
-    const bookmarkletSrc = octopus.generate(state.bookmarkletSrc, data);
+    const bookmarkletSrc = octopus.generate(state.bookmarkletSrc, data)
 
     $('#bookmarklet').setAttribute('href', `javascript:${bookmarkletSrc}`)
 
     const offlineSrc = octopus.generate(state.offlineSrc, data)
 
-    $('#mobile_offline').setAttribute('href', `data:text/html;charset=utf-8;base64,${utf8_to_b64(offlineSrc)}`)
+    $('#mobile_offline').setAttribute('href', `data:text/html;charset=utf-8;base64,${utf8ToBase64(offlineSrc)}`)
 
     $('#mobile').setAttribute('href', `mobile.html${objectToQuerystring(data)}`)
   }

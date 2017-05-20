@@ -1,60 +1,61 @@
-import selectText, { copyToClipboard } from '../lib/select-text'
+/* eslint-disable radix */
 import tpl from '../bookmarklet.html'
+import selectText, { copyToClipboard } from '../lib/select-text'
 import * as octopus from './octopus'
 
 const doc = document
 
-const $ = (selector, context = doc) => context.querySelector(selector);
+const $ = (selector, context = doc) => context.querySelector(selector)
 
 export function init(state) {
-  removePanel();
-  const text = preRender(tpl, state);
+  removePanel()
+  const text = preRender(tpl, state)
 
-  const div = doc.createElement('div');
+  const div = doc.createElement('div')
   div.id = 'onepass-wrapper'
-  div.innerHTML = text;
+  div.innerHTML = text
 
   $('#salt', div).value = state.salt
 
-  bindEventHandlers(div);
-  bindDragAndDrop(div);
-  render(div);
+  bindEventHandlers(div)
+  bindDragAndDrop(div)
+  render(div)
 }
 
-export function init_mobile(state) {
+export function initMobile(state) {
   const div = doc.querySelector('.onePassPanel')
   div.id = 'onepass-wrapper'
-  div.innerHTML = preRender(div.innerHTML, state);
+  div.innerHTML = preRender(div.innerHTML, state)
   $('#salt', div).value = state.salt
-  bindEventHandlers(div);
+  bindEventHandlers(div)
 }
 
 function showGeneratePass(pwd) {
-  $('#op_keygen').textContent = pwd;
-  const pElem = $('.cg p[hidden]');
+  $('#op_keygen').textContent = pwd
+  const pElem = $('.cg p[hidden]')
   if (pElem) {
-    pElem.removeAttribute('hidden');
+    pElem.removeAttribute('hidden')
   }
 }
 
 function bindEventHandlers(context) {
   const $$ = (selector) => $(selector, context)
   $$('#toggler').addEventListener('click', function (event) {
-    const triggerElem = event.target;
-    const targetElem = $$('.optg');
-    const isHidden = targetElem.getAttribute('hidden');
+    const triggerElem = event.target
+    const targetElem = $$('.optg')
+    const isHidden = targetElem.getAttribute('hidden')
 
     if (isHidden !== null) {
-      targetElem.removeAttribute('hidden');
-      triggerElem.textContent = '−';
+      targetElem.removeAttribute('hidden')
+      triggerElem.textContent = '−'
     } else {
-      targetElem.setAttribute('hidden', '');
-      triggerElem.textContent = '+';
+      targetElem.setAttribute('hidden', '')
+      triggerElem.textContent = '+'
     }
   })
 
   $$('#onePass').addEventListener('submit', function (event) {
-    event.preventDefault();
+    event.preventDefault()
     const formElements = event.target.elements
     const gen = octopus.generate({
       domain$: formElements.domain.value,
@@ -64,18 +65,18 @@ function bindEventHandlers(context) {
       passOutLen$: parseInt(formElements.passOutLen.value),
       itCount$: parseInt(formElements.itCount.value),
       salt$: formElements.salt.value || ''
-    });
-    showGeneratePass(gen);
-  });
+    })
+    showGeneratePass(gen)
+  })
 
   $$('#op_clean').addEventListener('click', function () {
-    $$('.cg p').setAttribute('hidden', '');
-    $$('#op_keygen').textContent = '';
-  });
+    $$('.cg p').setAttribute('hidden', '')
+    $$('#op_keygen').textContent = ''
+  })
 
   $$('a[title="close"]').addEventListener('click', function () {
-    removePanel();
-  });
+    removePanel()
+  })
 
   let timer = null
 
@@ -91,11 +92,15 @@ function bindEventHandlers(context) {
         timer = null
       }, 3000)
     }
-  });
+  })
 }
 
 function bindDragAndDrop(div) {
-  let eX, eY, startX, startY, moveListener, frame
+  let eX
+  let eY
+  let startX
+  let startY
+  let moveListener
   div.addEventListener('mousedown', function (event) {
     if (event.ctrlKey) {
       div.style.cursor = 'move'
@@ -117,15 +122,15 @@ function bindDragAndDrop(div) {
     }
   })
 
-  doc.addEventListener('mouseup', function (event) {
+  doc.addEventListener('mouseup', function () {
     doc.removeEventListener('mousemove', moveListener)
     div.style.cursor = 'auto'
   })
 }
 
 function preRender(text, state) {
-  const passOutRange = state.passLenRange.map(
-    val => `<option value="${val}" ${state.passOutLen === val ? 'selected="true"' : ''}>${val}</option>`)
+  const passOutRange = state.passLenRange.map((val) =>
+    `<option value="${val}" ${state.passOutLen === val ? 'selected="true"' : ''}>${val}</option>`)
 
   return text.replace('$VERSION$', state.version)
     .replace('$DOMAIN$', state.domain)
@@ -134,7 +139,7 @@ function preRender(text, state) {
 }
 
 function render(elem) {
-  doc.body.appendChild(elem);
+  doc.body.appendChild(elem)
 }
 
 function removePanel() {

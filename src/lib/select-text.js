@@ -18,9 +18,10 @@ export default function selectText(element) {
 export function copyToClipboard() {
   try {
     // copy text
-    document.execCommand('copy');
-  } catch (err) {
-    alert('please press Ctrl/Cmd+C to copy');
+    document.execCommand('copy')
+  }
+  catch (err) {
+    alert('please press Ctrl/Cmd+C to copy')
     return false
   }
   return true

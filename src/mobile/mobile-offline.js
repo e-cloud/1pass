@@ -1,4 +1,4 @@
-import * as octopus from '../mvo/octopus'
 import model from '../mvo/model'
+import * as octopus from '../mvo/octopus'
 
-octopus.init_mobile(model)
+octopus.initMobile(model)
