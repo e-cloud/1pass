@@ -97,27 +97,29 @@ function bindEventHandlers(context) {
 function bindDragAndDrop(div) {
   let eX, eY, startX, startY, moveListener, frame
   div.addEventListener('mousedown', function (event) {
-    doc.removeEventListener('mousemove', moveListener)
-    let target = div.lastElementChild
-    startX = event.clientX
-    startY = event.clientY
-    eX = target.offsetLeft
-    eY = target.offsetTop
+    if (event.ctrlKey) {
+      div.style.cursor = 'move'
+      doc.removeEventListener('mousemove', moveListener)
+      const target = div.lastElementChild
+      startX = event.clientX
+      startY = event.clientY
+      eX = target.offsetLeft
+      eY = target.offsetTop
 
-    doc.addEventListener('mousemove', moveListener = function (event) {
-      const currentX = event.clientX, currentY = event.clientY
-      //cancelAnimationFrame(frame)
-      //frame = requestAnimationFrame(function () {
-      target.style.left = (currentX - startX + eX) + 'px'
-      target.style.top = (currentY - startY + eY) + 'px'
-      //})
-    })
+      doc.addEventListener('mousemove', moveListener = function (mvevent) {
+        const currentX = mvevent.clientX
+        const currentY = mvevent.clientY
+        target.style.left = `${currentX - startX + eX}px`
+        target.style.top = `${currentY - startY + eY}px`
+      })
 
-    return false
+      return false
+    }
   })
 
   doc.addEventListener('mouseup', function (event) {
     doc.removeEventListener('mousemove', moveListener)
+    div.style.cursor = 'auto'
   })
 }
 
