@@ -5,5 +5,5 @@ export default {
   passOutLen: 16,
   charset: 94,
   itCount: 100,
-  salt: 'I am a dummy salt. Don\'t use me.'
+  salt: 'I am a dummy salt. Do not use me.'
 }
