@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="UTF-8">
+  <title>OnePass - Mobile Version</title>
+
+  <meta name="author" content="e-cloud">
+  <meta name="description" content="OnePass是一个小书签（bookmarklet，或译为书签工具），用于方便而安全地生成密码" />
+  <meta name="keywords" content="OnePass, 1pass, bookmarklet, password encryption, mobile" />
+  <meta name="copyright" content="Copyright @e-cloud" />
+
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      background: linear-gradient(-45deg, #66cdcc 0%, #336799 100%);
+      color: white;
+      margin: 0;
+      padding: 8px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    label {
+      display: block;
+    }
+
+    input,
+    select {
+      width: 100%;
+      border: 0;
+      margin: .2em auto;
+      height: 2em;
+      padding: 0 .5em;
+    }
+
+    .cg {
+      margin: .5em;
+    }
+
+    .cg p {
+      text-align: center;
+    }
+
+    .cg button {
+      margin: .5em auto;
+      width: 100%;
+      padding: 0;
+      height: 2.5em;
+      background-color: transparent;
+      border: 3px solid white;
+      border-radius: 50px;
+      color: white;
+      font-weight: 400;
+      font-size: 1em;
+      cursor: pointer;
+    }
+
+    #op_toastr {
+      position: absolute;
+      top: 1em;
+      left: 0;
+      width: 100%;
+      text-align: center;
+    }
+
+    #op_toastr span {
+      background-color: #434343;
+      padding: 5px 10px;
+      border-radius: 5px;
+    }
+
+     ::selection {
+      background-color: rgba(16, 36, 33, 0.7);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="onePassPanel">
+    <header>
+      <div class="opp-title">
+        <span>OnePass</span>
+        <span>v$VERSION$</span>
+      </div>
+      <div class="opp-ctrl-btns">
+        <a title="help" href="https://github.com/e-cloud/1pass" target="_blank">?</a>
+        <a id="toggler" title="expand/fold" hidden>+</a>
+        <a title="close" hidden>×</a>
+      </div>
+    </header>
+    <hr>
+    <form id="onePass">
+      <div class="fg">
+        <label for="domain">域名(*)</label>
+        <input id="domain" value="$DOMAIN$" required>
+      </div>
+
+      <div class="fg">
+        <label for="name">用户名</label>
+        <input id="name" value="">
+      </div>
+
+      <div class="fg">
+        <label for="pass">主密码(*)</label>
+        <input id="pass" type="password" value="" pattern=".{6,}" maxlength="10086" autocomplete="off" placeholder="至少6位" required>
+      </div>
+
+      <div class="fg">
+        <label for="passOutLen">密码长度</label>
+        <select id="passOutLen" required>
+        $PASS_OUT_RANGE$
+      </select>
+      </div>
+
+      <div class="optg">
+        <div class="fg">
+          <label for="charset">密码字符集</label>
+          <select id="charset" required>
+          <option value="94">所有可打印字符</option>
+          <option value="64">字母、数字以及 + 和 / </option>
+          <option value="62">字母和数字</option>
+          <option value="10">只含数字</option>
+        </select>
+        </div>
+
+        <div class="fg">
+          <label for="itCount">迭代次数</label>
+          <input id="itCount" value="$IT_COUNT$" type="number" min="0" max="9999" required>
+        </div>
+
+        <div class="fg">
+          <label for="salt">盐(salt)</label>
+          <input id="salt" value="$SALT$">
+        </div>
+      </div>
+
+      <div class="cg">
+        <button type="submit">生成密码</button>
+        <button type="button" id="op_clean" hidden>清除密码</button>
+        <p hidden>
+          <output id="op_keygen"></output>
+        </p>
+        <div id="op_toastr" hidden>
+          <span>密码已复制到剪贴板</span>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <script>!function(){'use strict';function e(e){switch(e){case 10:return C;case 62:return y+m+C;case 64:return y+m+C+'+/';case 94:return new Array(94).fill(0).map(function(e,t){return String.fromCharCode(t+33)}).join('')}}function t(e,t){for(var r=[],n=0,o=1;n<t;n++,o*=e)r[n]=o;return r}function r(e,t){for(var r=arguments.length>2&&void 0!==arguments[2]?arguments[2]:2,o=0,a=0,i=n(e,r),s=Math.log(r)/Math.log(e),u=0,f=i;f<=t;f++){var h=Math.ceil(f*s),c=f/h;c>u&&(u=c,o=f,a=h)}return{bitsCount:o,charsCountInBits:a}}function n(e,t){return Math.floor(Math.log(e)/Math.log(t))}function o(e){for(var t=[],r=0;r<e.length;r++){var n=e.charCodeAt(r);n<128?t.push(n):n<2048?t.push(192|n>>6,128|63&n):n<55296||n>=57344?t.push(224|n>>12,128|n>>6&63,128|63&n):(r++,n=65536+((1023&n)<<10|1023&e.charCodeAt(r)),t.push(240|n>>18,128|n>>12&63,128|n>>6&63,128|63&n))}return t}function a(e){var t=void 0,r=void 0,n=void 0,o=void 0,a='',i=e.length;for(t=0;t<i;)switch((r=e[t++])>>4){case 0:case 1:case 2:case 3:case 4:case 5:case 6:case 7:a+=String.fromCharCode(r);break;case 12:case 13:n=e[t++],a+=String.fromCharCode((31&r)<<6|63&n);break;case 14:n=e[t++],o=e[t++],a+=String.fromCharCode((15&r)<<12|(63&n)<<6|(63&o)<<0)}return a}function i(e,t,r){var n=0,o=Math.floor(t/8),a=t%8,i=Math.min(r,8-a);if(0!==i){n=(e[o]>>8-i-a&k[7-a])<<r-i,o+=Math.floor((a+i)/8),a=(a+i)%8;var s=r-i;for(s>8&&(s=8);s>0;)i+=s,n|=e[o]>>8-s<<r-i,o+=Math.floor((a+s)/8),a=(a+s)%8,(s=r-i)>8&&(s=8)}return n}function s(e,t,r,n){var o=Math.floor(r/8),a=r%8,i=Math.min(n,8-a);if(0!==i){var s=n+a-8,u=s>=0?t>>s:t<<-s;u&=k[7-a],u&=255,e[o]|=u,o+=Math.floor((a+i)/8),a=(a+i)%8;var f=n-i;for(f>8&&(f=8);f>0;){i+=f;var h=t>>n-i<<8-f&255;e[o]|=h,o+=Math.floor((a+f)/8),a=(a+f)%8,f=n-i,f>8&&(f=8)}}}function u(e){var t=void 0,r=void 0,n=document;window.getSelection?(r=window.getSelection(),t=n.createRange(),t.selectNodeContents(e),r.removeAllRanges(),r.addRange(t)):n.body.createTextRange&&(t=n.body.createTextRange(),t.moveToElementText(e),t.select())}function f(){try{document.execCommand('copy')}catch(e){return alert('please press Ctrl/Cmd+C to copy'),!1}return!0}function h(e){var t=H.querySelector('.onePassPanel');t.id='onepass-wrapper',t.innerHTML=p(t.innerHTML,e),S('#salt',t).value=e.salt,l(t)}function c(e){S('#op_keygen').textContent=e;var t=S('.cg p[hidden]');t&&t.removeAttribute('hidden')}function l(e){var t=function(t){return S(t,e)};t('#toggler').addEventListener('click',function(e){var r=e.target,n=t('.optg');null!==n.getAttribute('hidden')?(n.removeAttribute('hidden'),r.textContent='−'):(n.setAttribute('hidden',''),r.textContent='+')}),t('#onePass').addEventListener('submit',function(e){e.preventDefault();var t=e.target.elements;c(g({domain$:t.domain.value,charset$:parseInt(t.charset.value),username$:t.name.value||'',password$:t.pass.value,passOutLen$:parseInt(t.passOutLen.value),itCount$:parseInt(t.itCount.value),salt$:t.salt.value||''}))}),t('#op_clean').addEventListener('click',function(){t('.cg p').setAttribute('hidden',''),t('#op_keygen').textContent=''}),t('a[title="close"]').addEventListener('click',function(){d()});var r=null;t('#op_keygen').addEventListener('click',function(e){u(e.target),f()&&(t('#op_toastr').removeAttribute('hidden'),r&&clearTimeout(r),r=setTimeout(function(){t('#op_toastr').setAttribute('hidden',''),r=null},3e3))})}function p(e,t){var r=t.passLenRange.map(function(e){return'<option value="'+e+'" '+(t.passOutLen===e?'selected="true"':'')+'>'+e+'</option>'});return e.replace('$VERSION$',t.version).replace('$DOMAIN$',t.domain).replace('$IT_COUNT$',t.itCount).replace('$PASS_OUT_RANGE$',r)}function d(){var e=S('#onepass-wrapper');e&&e.parentNode.removeChild(e)}function v(e,t){var r=new E('SHA3-512','TEXT');return r.setHMACKey(e,'TEXT'),r.update(t.domain$+'-'+t.username$+'_'+t.salt$),r.getHMAC('HEX')}function b(e){var t=new E('SHA3-512','TEXT',{numRounds:e.itCount$});return t.update(e.password$),t.getHash('HEX')}function w(t,r,n){var o=new M(e(n)).encodeString(t);return o.length<r&&window.alert('出问题了，请联系作者:)'),o.slice(0,r)}function g(e){return w(v(b(e),e),e.passOutLen$,e.charset$)}for(var A={version:'0.4.0',domain:'',passLenRange:new Array(123).fill(0).map(function(e,t){return t+6}),passOutLen:16,charset:94,itCount:100,salt:'I am a dummy salt. Do not use me.'},E=('undefined'!=typeof window?window:'undefined'!=typeof global?global:'undefined'!=typeof self&&self,function(e,t){return t={exports:{}},e(t,t.exports),t.exports}(function(e,t){!function(r){function n(e,t,r){var n,o,c,l,v,b,w,g,A,E=0,C=[],m=0,y=!1,k=[],T=[],B=!1,L=!1,M=-1;if(r=r||{},n=r.encoding||'UTF8',(A=r.numRounds||1)!==parseInt(A,10)||1>A)throw Error('numRounds must a integer >= 1');if(0!==e.lastIndexOf('SHA3-',0)&&0!==e.lastIndexOf('SHAKE',0))throw Error('Chosen SHA variant is not supported');var H=6;if(b=d,g=function(e){var t,r=[];for(t=0;5>t;t+=1)r[t]=e[t].slice();return r},M=1,'SHA3-224'===e)v=1152,l=224;else if('SHA3-256'===e)v=1088,l=256;else if('SHA3-384'===e)v=832,l=384;else if('SHA3-512'===e)v=576,l=512;else if('SHAKE128'===e)v=1344,l=-1,H=31,L=!0;else{if('SHAKE256'!==e)throw Error('Chosen SHA variant is not supported');v=1088,l=-1,H=31,L=!0}w=function(e,t,r,n,o){r=v;var a,i=H,s=[],u=r>>>5,f=0,h=t>>>5;for(a=0;a<h&&t>=r;a+=u)n=d(e.slice(a,a+u),n),t-=r;for(e=e.slice(a),t%=r;e.length<u;)e.push(0);for(a=t>>>3,e[a>>2]^=i<<a%4*8,e[u-1]^=2147483648,n=d(e,n);32*s.length<o&&(e=n[f%5][f/5|0],s.push(e.b),!(32*s.length>=o));)s.push(e.a),0==64*(f+=1)%r&&d(null,n);return s},c=h(t,n,M),o=p(e),this.setHMACKey=function(t,r,a){var i;if(!0===y)throw Error('HMAC key already set');if(!0===B)throw Error('Cannot set HMAC key after calling update');if(!0===L)throw Error('SHAKE is not supported for HMAC');if(n=(a||{}).encoding||'UTF8',r=h(r,n,M)(t),t=r.binLen,r=r.value,i=v>>>3,a=i/4-1,i<t/8){for(r=w(r,t,0,p(e),l);r.length<=a;)r.push(0);r[a]&=4294967040}else if(i>t/8){for(;r.length<=a;)r.push(0);r[a]&=4294967040}for(t=0;t<=a;t+=1)k[t]=909522486^r[t],T[t]=1549556828^r[t];o=b(k,o),E=v,y=!0},this.update=function(e){var t,r,n,a=0,i=v>>>5;for(t=c(e,C,m),e=t.binLen,r=t.value,t=e>>>5,n=0;n<t;n+=i)a+v<=e&&(o=b(r.slice(n,n+i),o),a+=v);E+=a,C=r.slice(a>>>5),m=e%v,B=!0},this.getHash=function(t,r){var n,h,c,d;if(!0===y)throw Error('Cannot call getHash after setting HMAC key');if(c=f(r),!0===L){if(-1===c.shakeLen)throw Error('shakeLen must be specified in options');l=c.shakeLen}switch(t){case'HEX':n=function(e){return a(e,l,M,c)};break;case'B64':n=function(e){return i(e,l,M,c)};break;case'BYTES':n=function(e){return s(e,l,M)};break;case'ARRAYBUFFER':try{h=new ArrayBuffer(0)}catch(e){throw Error('ARRAYBUFFER not supported by this environment')}n=function(e){return u(e,l,M)};break;default:throw Error('format must be HEX, B64, BYTES, or ARRAYBUFFER')}for(d=w(C.slice(),m,E,g(o),l),h=1;h<A;h+=1)!0===L&&0!=l%32&&(d[d.length-1]&=16777215>>>24-l%32),d=w(d,l,0,p(e),l);return n(d)},this.getHMAC=function(t,r){var n,h,c,d;if(!1===y)throw Error('Cannot call getHMAC without first setting HMAC key');switch(c=f(r),t){case'HEX':n=function(e){return a(e,l,M,c)};break;case'B64':n=function(e){return i(e,l,M,c)};break;case'BYTES':n=function(e){return s(e,l,M)};break;case'ARRAYBUFFER':try{n=new ArrayBuffer(0)}catch(e){throw Error('ARRAYBUFFER not supported by this environment')}n=function(e){return u(e,l,M)};break;default:throw Error('outputFormat must be HEX, B64, BYTES, or ARRAYBUFFER')}return h=w(C.slice(),m,E,g(o),l),d=b(T,p(e)),d=w(h,l,v,d,l),n(d)}}function o(e,t){this.a=e,this.b=t}function a(e,t,r,n){var o='';t/=8;var a,i,s;for(s=-1===r?3:0,a=0;a<t;a+=1)i=e[a>>>2]>>>8*(s+a%4*r),o+='0123456789abcdef'.charAt(i>>>4&15)+'0123456789abcdef'.charAt(15&i);return n.outputUpper?o.toUpperCase():o}function i(e,t,r,n){var o,a,i,s,u='',f=t/8;for(s=-1===r?3:0,o=0;o<f;o+=3)for(a=o+1<f?e[o+1>>>2]:0,i=o+2<f?e[o+2>>>2]:0,i=(e[o>>>2]>>>8*(s+o%4*r)&255)<<16|(a>>>8*(s+(o+1)%4*r)&255)<<8|i>>>8*(s+(o+2)%4*r)&255,a=0;4>a;a+=1)u+=8*o+6*a<=t?'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'.charAt(i>>>6*(3-a)&63):n.b64Pad;return u}function s(e,t,r){var n='';t/=8;var o,a,i;for(i=-1===r?3:0,o=0;o<t;o+=1)a=e[o>>>2]>>>8*(i+o%4*r)&255,n+=String.fromCharCode(a);return n}function u(e,t,r){t/=8;var n,o,a,i=new ArrayBuffer(t);for(a=new Uint8Array(i),o=-1===r?3:0,n=0;n<t;n+=1)a[n]=e[n>>>2]>>>8*(o+n%4*r)&255;return i}function f(e){var t={outputUpper:!1,b64Pad:'=',shakeLen:-1};if(e=e||{},t.outputUpper=e.outputUpper||!1,!0===e.hasOwnProperty('b64Pad')&&(t.b64Pad=e.b64Pad),!0===e.hasOwnProperty('shakeLen')){if(0!=e.shakeLen%8)throw Error('shakeLen must be a multiple of 8');t.shakeLen=e.shakeLen}if('boolean'!=typeof t.outputUpper)throw Error('Invalid outputUpper formatting option');if('string'!=typeof t.b64Pad)throw Error('Invalid b64Pad formatting option');return t}function h(e,t,r){switch(t){case'UTF8':case'UTF16BE':case'UTF16LE':break;default:throw Error('encoding must be UTF8, UTF16BE, or UTF16LE')}switch(e){case'HEX':e=function(e,t,n){var o,a,i,s,u,f,h=e.length;if(0!=h%2)throw Error('String of HEX type must be in byte increments');for(t=t||[0],n=n||0,u=n>>>3,f=-1===r?3:0,o=0;o<h;o+=2){if(a=parseInt(e.substr(o,2),16),isNaN(a))throw Error('String of HEX type contains invalid characters');for(s=(o>>>1)+u,i=s>>>2;t.length<=i;)t.push(0);t[i]|=a<<8*(f+s%4*r)}return{value:t,binLen:4*h+n}};break;case'TEXT':e=function(e,n,o){var a,i,s,u,f,h,c,l,p=0;if(n=n||[0],o=o||0,f=o>>>3,'UTF8'===t)for(l=-1===r?3:0,s=0;s<e.length;s+=1)for(a=e.charCodeAt(s),i=[],128>a?i.push(a):2048>a?(i.push(192|a>>>6),i.push(128|63&a)):55296>a||57344<=a?i.push(224|a>>>12,128|a>>>6&63,128|63&a):(s+=1,a=65536+((1023&a)<<10|1023&e.charCodeAt(s)),i.push(240|a>>>18,128|a>>>12&63,128|a>>>6&63,128|63&a)),u=0;u<i.length;u+=1){for(c=p+f,h=c>>>2;n.length<=h;)n.push(0);n[h]|=i[u]<<8*(l+c%4*r),p+=1}else if('UTF16BE'===t||'UTF16LE'===t)for(l=-1===r?2:0,i='UTF16LE'===t&&1!==r||'UTF16LE'!==t&&1===r,s=0;s<e.length;s+=1){for(a=e.charCodeAt(s),!0===i&&(u=255&a,a=u<<8|a>>>8),c=p+f,h=c>>>2;n.length<=h;)n.push(0);n[h]|=a<<8*(l+c%4*r),p+=2}return{value:n,binLen:8*p+o}};break;case'B64':e=function(e,t,n){var o,a,i,s,u,f,h,c,l=0;if(-1===e.search(/^[a-zA-Z0-9=+\/]+$/))throw Error('Invalid character in base-64 string');if(a=e.indexOf('='),e=e.replace(/\=/g,''),-1!==a&&a<e.length)throw Error('Invalid \'=\' found in base-64 string');for(t=t||[0],n=n||0,f=n>>>3,c=-1===r?3:0,a=0;a<e.length;a+=4){for(u=e.substr(a,4),i=s=0;i<u.length;i+=1)o='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'.indexOf(u[i]),s|=o<<18-6*i;for(i=0;i<u.length-1;i+=1){for(h=l+f,o=h>>>2;t.length<=o;)t.push(0);t[o]|=(s>>>16-8*i&255)<<8*(c+h%4*r),l+=1}}return{value:t,binLen:8*l+n}};break;case'BYTES':e=function(e,t,n){var o,a,i,s,u,f;for(t=t||[0],n=n||0,i=n>>>3,f=-1===r?3:0,a=0;a<e.length;a+=1)o=e.charCodeAt(a),u=a+i,s=u>>>2,t.length<=s&&t.push(0),t[s]|=o<<8*(f+u%4*r);return{value:t,binLen:8*e.length+n}};break;case'ARRAYBUFFER':try{e=new ArrayBuffer(0)}catch(e){throw Error('ARRAYBUFFER not supported by this environment')}e=function(e,t,n){var o,a,i,s,u,f;for(t=t||[0],n=n||0,a=n>>>3,u=-1===r?3:0,f=new Uint8Array(e),o=0;o<e.byteLength;o+=1)s=o+a,i=s>>>2,t.length<=i&&t.push(0),t[i]|=f[o]<<8*(u+s%4*r);return{value:t,binLen:8*e.byteLength+n}};break;default:throw Error('format must be HEX, TEXT, B64, BYTES, or ARRAYBUFFER')}return e}function c(e,t){return 32<t?(t-=32,new o(e.b<<t|e.a>>>32-t,e.a<<t|e.b>>>32-t)):0!==t?new o(e.a<<t|e.b>>>32-t,e.b<<t|e.a>>>32-t):e}function l(e,t){return new o(e.a^t.a,e.b^t.b)}function p(e){var t=[];if(0!==e.lastIndexOf('SHA3-',0)&&0!==e.lastIndexOf('SHAKE',0))throw Error('No SHA variants supported');for(e=0;5>e;e+=1)t[e]=[new o(0,0),new o(0,0),new o(0,0),new o(0,0),new o(0,0)];return t}function d(e,t){var r,n,a,i,s=[],u=[];if(null!==e)for(n=0;n<e.length;n+=2)t[(n>>>1)%5][(n>>>1)/5|0]=l(t[(n>>>1)%5][(n>>>1)/5|0],new o(e[n+1],e[n]));for(r=0;24>r;r+=1){for(i=p('SHA3-'),n=0;5>n;n+=1){a=t[n][0];var f=t[n][1],h=t[n][2],d=t[n][3],w=t[n][4];s[n]=new o(a.a^f.a^h.a^d.a^w.a,a.b^f.b^h.b^d.b^w.b)}for(n=0;5>n;n+=1)u[n]=l(s[(n+4)%5],c(s[(n+1)%5],1));for(n=0;5>n;n+=1)for(a=0;5>a;a+=1)t[n][a]=l(t[n][a],u[n]);for(n=0;5>n;n+=1)for(a=0;5>a;a+=1)i[a][(2*n+3*a)%5]=c(t[n][a],v[n][a]);for(n=0;5>n;n+=1)for(a=0;5>a;a+=1)t[n][a]=l(i[n][a],new o(~i[(n+1)%5][a].a&i[(n+2)%5][a].a,~i[(n+1)%5][a].b&i[(n+2)%5][a].b));t[0][0]=l(t[0][0],b[r])}return t}var v,b;b=[new o(0,1),new o(0,32898),new o(2147483648,32906),new o(2147483648,2147516416),new o(0,32907),new o(0,2147483649),new o(2147483648,2147516545),new o(2147483648,32777),new o(0,138),new o(0,136),new o(0,2147516425),new o(0,2147483658),new o(0,2147516555),new o(2147483648,139),new o(2147483648,32905),new o(2147483648,32771),new o(2147483648,32770),new o(2147483648,128),new o(0,32778),new o(2147483648,2147483658),new o(2147483648,2147516545),new o(2147483648,32896),new o(0,2147483649),new o(2147483648,2147516424)],v=[[0,36,3,41,18],[1,44,10,45,2],[62,6,43,15,61],[28,55,25,21,56],[27,20,39,8,14]],e.exports&&(e.exports=n),t=n}()})),C='0123456789',m='abcdefghijklmnopqrstuvwxyz',y='ABCDEFGHIJKLMNOPQRSTUVWXYZ',k=[],T=0;T<8;T++)k[T]=Math.pow(2,T+1)-1;var B=function(e,t){if(!(e instanceof t))throw new TypeError('Cannot call a class as a function')},L=function(){function e(e,t){for(var r=0;r<t.length;r++){var n=t[r];n.enumerable=n.enumerable||!1,n.configurable=!0,'value'in n&&(n.writable=!0),Object.defineProperty(e,n.key,n)}}return function(t,r,n){return r&&e(t.prototype,r),n&&e(t,n),t}}(),M=function(){function e(n){var o=arguments.length>1&&void 0!==arguments[1]?arguments[1]:64;B(this,e),this.alphabet=n,this.alphabetLen=n.length,this.blockMaxBitsCount=o;var a=r(this.alphabetLen,this.blockMaxBitsCount,2);this.blockBitsCount=a.bitsCount,this.blockCharsCount=a.charsCountInBits,this.powN=t(this.alphabetLen,this.blockCharsCount),this.inverseAlphabet={};for(var i=0;i<this.alphabetLen;i++)this.inverseAlphabet[this.alphabet[i]]=i}return L(e,[{key:'encodeString',value:function(e){return this.encodeBytes(o(e))}},{key:'encodeBytes',value:function(e){if(!e||0===e.length)return'';for(var t=this.blockBitsCount,r=this.blockCharsCount,n=Math.floor(8*e.length/t)*t,o=8*e.length-n,a=Math.floor(n*r/t),s=Math.floor((o*r+t-1)/t),u=Math.floor(a/r),f=[],h=0;h<u;h++)this.encodeBlock(e,f,h,t,r);if(0!==o){var c=i(e,n,o);this.bitsToChars(f,a,s,c)}return f.join('')}},{key:'encodeBlock',value:function(e,t,r,n,o){var a=r*o,s=r*n,u=i(e,s,n);this.bitsToChars(t,a,o,u)}},{key:'bitsToChars',value:function(e,t,r,n){for(var o=n,a=0;a<r;a++)e[t+a]=this.alphabet[o%this.alphabetLen],o=Math.floor(o/this.alphabetLen)}},{key:'decodeToString',value:function(e){return a(this.decodeToBytes(e))}},{key:'decodeToBytes',value:function(e){if(!e||0===e.length)return[];var t=this.blockBitsCount,r=this.blockCharsCount,n=8*Math.floor((Math.floor((e.length-1)*t/r)+8)/8),o=Math.floor(n/t)*t,a=n-o,i=Math.floor(o*r/t),u=Math.floor((a*r+t-1)/t),f=this.charsToBits(e,i,u);(a>=32?0:f>>a!=0)&&(n+=8,o=Math.floor(n/t)*t,a=n-o,i=Math.floor(o*r/t),u=Math.floor((a*r+t-1)/t));for(var h=Math.floor(i/r),c=[],l=0;l<h;l++)this.decodeBlock(e,c,l,t,r);if(0!==u){s(c,this.charsToBits(e,i,u),o,a)}return c}},{key:'decodeBlock',value:function(e,t,r,n,o){var a=r*o,i=r*n;s(t,this.charsToBits(e,a,o),i,n)}},{key:'charsToBits',value:function(e,t,r){for(var n=0,o=0;o<r;o++){n+=this.inverseAlphabet[e[t+o]]*this.powN[o]}return n}}]),e}(),H=document,S=function(e){return(arguments.length>1&&void 0!==arguments[1]?arguments[1]:H).querySelector(e)};!function(e){e.passOutLen=parseInt(e.passOutLen),h(e)}(A)}();
+</script>
+</body>
+
+</html>
