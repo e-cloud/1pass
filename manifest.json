@@ -1,0 +1,30 @@
+{
+  "name": "OnePass",
+  "short_name": "OnePass",
+  "description": "A universal password generator by one master password",
+  "start_url": "pwa.html",
+  "display": "standalone",
+  "background_color": "#3E4EB8",
+  "theme_color": "#2F3BA2",
+  "icons": [{
+    "src": "favicon-120.png",
+      "sizes": "120x120",
+      "type": "image/png"
+    }, {
+      "src": "favicon-144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    }, {
+      "src": "favicon-152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    }, {
+      "src": "favicon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    }, {
+      "src": "favicon-310.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }]
+}
