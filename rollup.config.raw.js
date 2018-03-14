@@ -13,9 +13,11 @@ const dotAttrWrapPair = [dotAttrWrapOpen, dotAttrWrapClose];
 
 export function generate() {
   return {
-    entry: 'src/bookmarklet.js',
-    format: 'iife',
-    dest: 'demo/bundle.js',
+    input: 'src/bookmarklet.js',
+    output: {
+      format: 'iife',
+      file: 'demo/bundle.js'
+    },
     plugins: [
       replace({
         PKG_VERSION: JSON.stringify(version)
@@ -38,7 +40,7 @@ export function generate() {
       babel({
         babelrc: false,
         plugins: ['transform-exponentiation-operator', 'external-helpers'],
-        presets: [['es2015', { 'modules': false }]],
+        presets: [['env', { 'modules': false }]],
         exclude: 'node_modules/**' // only transpile our source code
       }),
       process.env.NODE_ENV === 'Production' && uglify({

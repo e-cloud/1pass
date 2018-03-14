@@ -13,6 +13,7 @@ import { version } from './package.json'
 import { create } from 'browser-sync'
 import del from 'del'
 import runSequence from 'run-sequence'
+import * as workboxBuild from 'workbox-build'
 
 const state = {
   version: version,
@@ -54,40 +55,53 @@ gulp.task('build-install-tpl', function () {
 
 gulp.task('build-install-js', function () {
   const cloneConfig = _.merge({}, generate(), {
-    entry: './src/install/install.js'
+    input: './src/install/install.js'
   })
   return rollup(cloneConfig).then(function (bundle) {
     return bundle.write({
       format: 'iife',
-      dest: 'dist/install.js'
+      file: 'dist/install.js'
     });
   });
 })
 
 gulp.task('install', [], function (callback) {
-  runSequence('clean', 'build-install-tpl', 'build-install-js', callback);
+  runSequence('build-install-tpl', 'build-install-js', callback);
 })
 
 gulp.task('mobile', function () {
   const cloneConfig = _.merge({}, generate(), {
-    entry: './src/mobile/mobile.js'
+    input: './src/mobile/mobile.js'
   })
   return rollup(cloneConfig).then(function (bundle) {
     return bundle.write({
       format: 'iife',
-      dest: 'dist/mobile.js'
+      file: 'dist/mobile.js'
     });
   });
 })
 
-gulp.task('mobile:offline', function () {
+gulp.task('mobile:pwa:index', function () {
+  return gulp.src('./src/pwa/index.html')
+    .pipe(rename({
+      basename: 'pwa'
+    }))
+    .pipe(gulp.dest('./dist'))
+})
+
+gulp.task('mobile:pwa:deps', function () {
+  return gulp.src('./node_modules/workbox-sw/build/workbox-sw.js')
+    .pipe(gulp.dest('./dist/libs/workbox-sw/build'))
+})
+
+gulp.task('mobile:pwa', ['mobile:pwa:index', 'mobile:pwa:deps'], function () {
   const cloneConfig = _.merge({}, generate(), {
-    entry: './src/mobile/mobile-offline.js'
+    input: './src/pwa/app.js'
   })
   return rollup(cloneConfig).then(function (bundle) {
     return bundle.write({
       format: 'iife',
-      dest: 'dist/mobile-offline.js'
+      file: 'dist/app.js'
     });
   });
 })
@@ -112,8 +126,29 @@ function replaceScript() {
   })
 }
 
-gulp.task('mobile:all', ['mobile', 'mobile:offline'], function () {
-  return gulp.src(['./dist/mobile.js', './dist/mobile-offline.js'])
+gulp.task('build-service-worker', function () {
+  return workboxBuild.injectManifest({
+    swSrc: 'src/pwa/sw.js',
+    swDest: 'dist/sw.js',
+    globDirectory: 'dist/',
+    globPatterns: [
+      '**\/*.png',
+      '**\/*.ico',
+      'app.js',
+      'pwa.html',
+      '*.json'
+    ]
+  });
+})
+
+gulp.task('assets', function () {
+  return gulp.src(['./src/assets/**', '!*.ai'])
+    .pipe(gulp.dest('./dist/'))
+})
+
+gulp.task('mobile:all', ['mobile', 'mobile:pwa'], function () {
+  // inject the script into mobile.html and output seperatly
+  return gulp.src(['./dist/mobile.js'])
     .pipe(replaceScript())
     .pipe(rename({
       extname: '.html'
@@ -126,15 +161,19 @@ gulp.task('env', function (cb) {
   cb()
 })
 
-gulp.task('build', ['install', 'mobile:all'], function () {
+gulp.task('bundle', [], function () {
   process.env.NODE_ENV = 'Production'
   return rollup(generate()).then(function (bundle) {
     process.env.NODE_ENV = 'Development'
     return bundle.write({
       format: 'iife',
-      dest: './dist/bundle.js'
+      file: './dist/bundle.js'
     });
   });
+})
+
+gulp.task('build', [], function (cb) {
+  runSequence('clean', ['install', 'mobile:all', 'assets'], 'build-service-worker', 'bundle', cb)
 })
 
 // create a task that ensures the `js` task is complete before

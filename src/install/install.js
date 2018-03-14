@@ -38,18 +38,18 @@ const state = {
 const octopus = {
   init() {
     getScript('./bundle.js')
+      // .then(function (source) {
+      //   return getScript('./mobile-offline.html')
+      //     .then(function (offlineSrc) {
+      //       return [source, offlineSrc]
+      //     })
+      // })
+      // .catch(function () {
+      //   alert('小书签脚本加载出错，请刷新重试')
+      // })
       .then(function (source) {
-        return getScript('./mobile-offline.html')
-          .then(function (offlineSrc) {
-            return [source, offlineSrc]
-          })
-      })
-      .catch(function () {
-        alert('小书签脚本加载出错，请刷新重试')
-      })
-      .then(function ([source, offlineSrc]) {
         state.bookmarkletSrc = source
-        state.offlineSrc = offlineSrc
+        //state.offlineSrc = offlineSrc
         view.init()
       })
   },
@@ -99,9 +99,9 @@ const view = {
 
     $('#bookmarklet').setAttribute('href', `javascript:${bookmarkletSrc}`)
 
-    const offlineSrc = octopus.generate(state.offlineSrc, data)
+    // const offlineSrc = octopus.generate(state.offlineSrc, data)
 
-    $('#mobile_offline').setAttribute('href', `data:text/html;charset=utf-8;base64,${utf8ToBase64(offlineSrc)}`)
+    // $('#mobile_offline').setAttribute('href', `data:text/html;charset=utf-8;base64,${utf8ToBase64(offlineSrc)}`)
 
     $('#mobile').setAttribute('href', `mobile.html${objectToQuerystring(data)}`)
   }
