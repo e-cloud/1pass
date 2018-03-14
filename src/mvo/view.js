@@ -1,7 +1,7 @@
 /* eslint-disable radix */
 import tpl from '../bookmarklet.html'
 import selectText, { copyToClipboard } from '../lib/select-text'
-import * as octopus from './octopus'
+import * as generator from './generate'
 
 const doc = document
 
@@ -57,7 +57,7 @@ function bindEventHandlers(context) {
   $$('#onePass').addEventListener('submit', function (event) {
     event.preventDefault()
     const formElements = event.target.elements
-    const gen = octopus.generate({
+    const gen = generator.generate({
       domain$: formElements.domain.value,
       charset$: parseInt(formElements.charset.value),
       username$: formElements.name.value || '',
