@@ -1,4 +1,4 @@
 {
-  "plugins": ["transform-exponentiation-operator"],
+  "plugins": ["transform-exponentiation-operator", "transform-object-rest-spread"],
   "presets": ["env"]
 }

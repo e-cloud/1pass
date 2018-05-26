@@ -1,6 +1,6 @@
 import commonjs from 'rollup-plugin-commonjs'
 import nodeResolve from 'rollup-plugin-node-resolve'
-import uglify from 'rollup-plugin-uglify'
+import { uglify } from 'rollup-plugin-uglify'
 import babel from 'rollup-plugin-babel'
 import html from 'rollup-plugin-html'
 import replace from 'rollup-plugin-replace'
@@ -39,8 +39,8 @@ export function generate() {
       }),
       babel({
         babelrc: false,
-        plugins: ['transform-exponentiation-operator', 'external-helpers'],
-        presets: [['env', { 'modules': false }]],
+        plugins: ['transform-exponentiation-operator', 'transform-object-rest-spread', 'external-helpers'],
+        presets: [['env', { modules: false }]],
         exclude: 'node_modules/**' // only transpile our source code
       }),
       process.env.NODE_ENV === 'Production' && uglify({
