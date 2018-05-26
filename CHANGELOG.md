@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.5.0"></a>
+# [0.5.0](https://github.com/e-cloud/1pass/compare/v0.4.0...v0.5.0) (2018-05-26)
+
+
+### Bug Fixes
+
+* avoid circular dependencies ([10c232a](https://github.com/e-cloud/1pass/commit/10c232a))
+
+
+### Features
+
+* upgrade install page with bootstrap 4 ([334f043](https://github.com/e-cloud/1pass/commit/334f043))
+* **pwa:** initial version of pwa ([bf88a69](https://github.com/e-cloud/1pass/commit/bf88a69))
+* **pwa:** support reading config from query and cache ([6966ef3](https://github.com/e-cloud/1pass/commit/6966ef3))
+
+
+
 <a name="0.4.0"></a>
 # [0.4.0](https://github.com/e-cloud/1pass/compare/v0.3.1...v0.4.0) (2017-05-20)
 
