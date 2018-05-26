@@ -83,16 +83,20 @@ workbox.precaching.precacheAndRoute([
   },
   {
     "url": "app.js",
-    "revision": "51f63b9c26f59bfc75216c2286c6cc8f"
+    "revision": "6fbd23b789fac1e5457459a32fadf4e7"
   },
   {
     "url": "pwa.html",
-    "revision": "fbb2d3cd20e803de058bd27891431adf"
+    "revision": "976d681e4705ac6154a3d602ce6be3ed"
+  },
+  {
+    "url": "manifest.json",
+    "revision": "8a7b766915c107de7e857a71608112b6"
   }
 ])
 
 workbox.routing.registerRoute(
-  new RegExp('.*\.js'),
+  /^(?!.*(?:install|bundle))(?:.+)\.(?:js|html)/,
   workbox.strategies.cacheFirst()
 );
 
