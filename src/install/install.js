@@ -19,12 +19,12 @@ function getScript(url) {
 }
 
 function objectToQuerystring(obj) {
-  return Object.keys(obj).reduce(function (str, key, i) {
-    const delimiter = (i === 0) ? '?' : '&'
+  return Object.keys(obj).reduce(function (queries, key) {
     const encodedKey = encodeURIComponent(key)
     const val = encodeURIComponent(obj[encodedKey])
-    return [str, delimiter, encodedKey, '=', val].join('')
-  }, '')
+    queries.push(encodedKey + '=' + val)
+    return queries
+  }, []).join('&')
 }
 
 function utf8ToBase64(str) {
@@ -103,7 +103,9 @@ const view = {
 
     // $('#mobile_offline').setAttribute('href', `data:text/html;charset=utf-8;base64,${utf8ToBase64(offlineSrc)}`)
 
-    $('#mobile').setAttribute('href', `mobile.html${objectToQuerystring(data)}`)
+    $('#mobile').setAttribute('href', `mobile.html?${objectToQuerystring(data)}`)
+
+    $('#mobile_offline').setAttribute('href', './pwa.html?' + objectToQuerystring(data))
   }
 }
 

@@ -5,7 +5,7 @@ import * as generator from './generate'
 
 const doc = document
 
-const $ = (selector, context = doc) => context.querySelector(selector)
+export const $ = (selector, context = doc) => context.querySelector(selector)
 
 export function init(state) {
   removePanel()
@@ -28,6 +28,8 @@ export function initMobile(state) {
   div.innerHTML = preRender(div.innerHTML, state)
   $('#salt', div).value = state.salt
   bindEventHandlers(div)
+
+  return div
 }
 
 function showGeneratePass(pwd) {

@@ -7,7 +7,7 @@ workbox.core.setCacheNameDetails({
 workbox.precaching.precacheAndRoute([])
 
 workbox.routing.registerRoute(
-  new RegExp('.*\.js'),
+  /^(?!.*(?:install|bundle))(?:.+)\.(?:js|html)/,
   workbox.strategies.cacheFirst()
 );
 
